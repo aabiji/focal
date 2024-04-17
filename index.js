@@ -49,8 +49,8 @@ function toggleSessionType() {
     }
 
     // Reset both timers
-    SESSION.workTimer = new Timer(1);
-    SESSION.restTimer = new Timer(1);
+    SESSION.workTimer = new Timer(25);
+    SESSION.restTimer = new Timer(4);
 }
 
 function updateTimer() {
@@ -86,5 +86,12 @@ window.onload = () => {
 
     SESSION.time = document.getElementById("time");
 
-    toggleSessionType(); // Start off with work session
+    toggleSessionType(); // Start off with a work session
+
+    // Toggle the visibility of the settings popup using buttons
+    let popup = document.getElementById("settings-popup");
+    let closeButton = document.getElementById("popup-close-button");
+    let settingsButton = document.getElementById("popup-open-button");
+    closeButton.onclick = () => popup.style.display = "none";
+    settingsButton.onclick = () => popup.style.display = "block";
 };
