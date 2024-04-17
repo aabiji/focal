@@ -1,48 +1,78 @@
 
+class Timer {
+    constructor(minutes) {
+        this.seconds = 0;
+        this.hours = Math.floor(minutes / 60);
+        this.minutes = minutes - (this.hours * 60);
+    }
+
+    countdown() {
+        this.seconds -= 1;
+        if (this.seconds <= 0) {
+            this.seconds = 59;
+            this.minutes -= 1;
+            if (this.minutes < 0) {
+                this.hours -= 1;
+                this.minutes = 59;
+            }
+        }
+    }
+
+    format() {
+        let h = this.hours.toString().padStart(2, "0");
+        let m = this.minutes.toString().padStart(2, "0");
+        let s = this.seconds.toString().padStart(2, "0");
+        return `${h}:${m}:${s}`;
+    }
+}
+
 SESSION = {
+    workTimer: undefined,
+    restTimer: undefined,
+    isWork: false,
+    isPaused: false,
+
+    // References to elements
     sessionType: undefined,
     timerToggle: undefined,
     intervalId: undefined,
-    time: undefined,
-    minutes: 0,
-    seconds: 0,
-    hours: 0,
+    time: undefined
 };
 
 function toggleSessionType() {
-    let type = SESSION.sessionType.innerHTML;
-    if (type == "Work") {
+    if (SESSION.isWork) {
         SESSION.sessionType.innerHTML = "Rest";
+        SESSION.isWork = false;
     } else {
         SESSION.sessionType.innerHTML = "Work";
+        SESSION.isWork = true;
     }
+
+    // Reset both timers
+    SESSION.workTimer = new Timer(1);
+    SESSION.restTimer = new Timer(1);
 }
 
-function incrementTime() {
-    SESSION.seconds += 1;
-    if (SESSION.seconds == 60) {
-        SESSION.minutes += 1;
-        SESSION.seconds = 0;
+function updateTimer() {
+    let timer = SESSION.isWork ? SESSION.workTimer : SESSION.restTimer;
+    timer.countdown();
+    if (timer.hours < 0) {
+        toggleSessionType();
     }
-    if (SESSION.minutes == 60) {
-        SESSION.hours += 1;
-        SESSION.minutes = 0;
-    }
-    let h = SESSION.hours.toString().padStart(2, "0");
-    let m = SESSION.minutes.toString().padStart(2, "0");
-    let s = SESSION.seconds.toString().padStart(2, "0");
-    let str = `${h}:${m}:${s}`;
-    SESSION.time.innerHTML = str;
+
+    let newTimer = SESSION.isWork ? SESSION.workTimer : SESSION.restTimer;
+    SESSION.time.innerHTML = newTimer.format();
 }
 
 function toggleTimer() {
-    let text = SESSION.timerToggle.innerHTML;
-    if (text == "Pause session") {
+    if (SESSION.isPaused) {
         SESSION.timerToggle.innerHTML = "Start session";
         clearInterval(SESSION.intervalId);
+        SESSION.isPaused = false;
     } else {
         SESSION.timerToggle.innerHTML = "Pause session";
-        SESSION.intervalId = setInterval(incrementTime, 1000);
+        SESSION.intervalId = setInterval(updateTimer, 1000);
+        SESSION.isPaused = true;
     }
 }
 
@@ -55,4 +85,6 @@ window.onload = () => {
     SESSION.sessionType.innerHTML = "Work";
 
     SESSION.time = document.getElementById("time");
+
+    toggleSessionType(); // Start off with work session
 };
