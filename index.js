@@ -31,11 +31,11 @@ SESSION = {
     restTimer: undefined,
     isWork: false,
     isPaused: false,
+    intervalId: undefined,
 
     // References to elements
     sessionType: undefined,
     timerToggle: undefined,
-    intervalId: undefined,
     time: undefined
 };
 
@@ -62,6 +62,8 @@ function updateTimer() {
 
     let newTimer = SESSION.isWork ? SESSION.workTimer : SESSION.restTimer;
     SESSION.time.innerHTML = newTimer.format();
+
+    document.title = `${SESSION.isWork ? "Work" : "Rest"} - ${newTimer.format()}`;
 }
 
 function toggleTimer() {
@@ -76,6 +78,45 @@ function toggleTimer() {
     }
 }
 
+// TODO: set the values (from localStorage) of the inputs when we open the popup
+// TODO: bind onfocusout event
+function bindTimerInputs() {
+    let sessionTypes = ["work", "rest"];
+    let inputTypes = ["hours", "minutes"];
+
+    for (let session of sessionTypes) {
+        for (let input of inputTypes) {
+            let id = `${session}-${input}`;
+            let element = document.getElementById(id);
+            element.oninput = () => {
+                if (element.value.length == 0) {
+                    return;
+                }
+
+                // Make sure the number is within range
+                let num = parseInt(element.value);
+                let max = input == "hours" ? 24 : 59;
+                let clamped = Math.max(0, Math.min(num, max));
+                if (num != clamped) {
+                    element.value = `${clamped}`;
+                }
+
+                // Update the input's value in localstorage
+                localStorage.setItem(id, num);
+            };
+        }
+    }
+}
+
+// Toggle the visibility of the popup
+function bindPopupEvents() {
+    let popup = document.getElementById("settings-popup");
+    let closeButton = document.getElementById("popup-close-button");
+    let openButton = document.getElementById("popup-open-button");
+    closeButton.onclick = () => popup.style.display = "none";
+    openButton.onclick = () => popup.style.display = "block";
+}
+
 window.onload = () => {
     SESSION.timerToggle = document.getElementById("session-toggle");
     SESSION.timerToggle.onclick = () => toggleTimer();
@@ -87,11 +128,6 @@ window.onload = () => {
     SESSION.time = document.getElementById("time");
 
     toggleSessionType(); // Start off with a work session
-
-    // Toggle the visibility of the settings popup using buttons
-    let popup = document.getElementById("settings-popup");
-    let closeButton = document.getElementById("popup-close-button");
-    let settingsButton = document.getElementById("popup-open-button");
-    closeButton.onclick = () => popup.style.display = "none";
-    settingsButton.onclick = () => popup.style.display = "block";
+    bindTimerInputs();
+    bindPopupEvents();
 };
