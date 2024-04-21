@@ -68,7 +68,7 @@ function updateTimer() {
 
 function toggleTimer() {
     if (SESSION.isPaused) {
-        SESSION.timerToggle.innerHTML = "Start session";
+        SESSION.timerToggle.innerHTML = "Resume session";
         clearInterval(SESSION.intervalId);
         SESSION.isPaused = false;
     } else {
@@ -78,16 +78,22 @@ function toggleTimer() {
     }
 }
 
-// TODO: set the values (from localStorage) of the inputs when we open the popup
-// TODO: bind onfocusout event
-function bindTimerInputs() {
+function initTimerInputs() {
     let sessionTypes = ["work", "rest"];
-    let inputTypes = ["hours", "minutes"];
+    let timeValues = ["hours", "minutes"];
 
     for (let session of sessionTypes) {
-        for (let input of inputTypes) {
-            let id = `${session}-${input}`;
+        for (let value of timeValues) {
+            let id = `${session}-${value}`;
             let element = document.getElementById(id);
+
+            // Set the input value to the value already in localStorage
+            let existingValue = localStorage.getItem(id);
+            if (existingValue !== undefined) {
+                element.value = `${existingValue}`;
+            }
+
+            // Update the value of our input element in localStorage
             element.oninput = () => {
                 if (element.value.length == 0) {
                     return;
@@ -95,7 +101,7 @@ function bindTimerInputs() {
 
                 // Make sure the number is within range
                 let num = parseInt(element.value);
-                let max = input == "hours" ? 24 : 59;
+                let max = value == "hours" ? 24 : 59;
                 let clamped = Math.max(0, Math.min(num, max));
                 if (num != clamped) {
                     element.value = `${clamped}`;
@@ -104,20 +110,31 @@ function bindTimerInputs() {
                 // Update the input's value in localstorage
                 localStorage.setItem(id, num);
             };
+
+            // Make sure the input is never empty
+            element.onblur = () => {
+                if (element.value.length == 0) {
+                    element.value = "0";
+                }
+            }
         }
     }
 }
 
-// Toggle the visibility of the popup
 function bindPopupEvents() {
     let popup = document.getElementById("settings-popup");
     let closeButton = document.getElementById("popup-close-button");
     let openButton = document.getElementById("popup-open-button");
+
+    // Toggle the visibility of the popup
     closeButton.onclick = () => popup.style.display = "none";
     openButton.onclick = () => popup.style.display = "block";
 }
 
 window.onload = () => {
+    let audio = new Audio("ping.mp3");
+    audio.play();
+
     SESSION.timerToggle = document.getElementById("session-toggle");
     SESSION.timerToggle.onclick = () => toggleTimer();
     SESSION.timerToggle.innerHTML = "Start session";
@@ -128,6 +145,7 @@ window.onload = () => {
     SESSION.time = document.getElementById("time");
 
     toggleSessionType(); // Start off with a work session
-    bindTimerInputs();
+
+    initTimerInputs();
     bindPopupEvents();
 };
