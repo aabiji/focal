@@ -187,6 +187,7 @@ window.onload = () => {
 
   timerToggle.onclick = () => pomodoro.toggleTimer();
   pomodoro.toggleSessionType(); // Start off with a work session
+  timeHeader.innerHTML = pomodoro.workTimer.format();
   bindPopupEvents(pomodoro);
   initTimerInputs();
 };
