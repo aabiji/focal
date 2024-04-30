@@ -1,6 +1,6 @@
-const SESSION_TYPES = ["work", "break"];
+const SESSION_TYPES = ["work", "short-break", "long-break"];
 const TIME_VALUES = ["hours", "minutes"];
-const DEFAULT_TIMES = { work: 25, break: 5 };
+const DEFAULT_TIMES = { work: 1, "short-break": 1, "long-break": 2 };
 let audioLoopCount = 0;
 
 class Timer {
@@ -36,8 +36,8 @@ function playRingTone() {
   audio.onseeked = () => {
     // Only loop up to 3 times
     audioLoopCount++;
-    if (audioLoopCount >= 3) {
-      audioLoopCount = 0;
+    if (audioLoopCount == 3) {
+      audioLoopCount = -1;
       audio.pause();
       audio.currentTime = 0;
     }
@@ -47,10 +47,12 @@ function playRingTone() {
 
 class Pomodoro {
   constructor(elements) {
-    this.isWork = false;
+    this.breakCount = 0;
     this.isPaused = false;
+    this.sessionType = "work";
     this.workTimer = new Timer(0, 0);
-    this.breakTimer = new Timer(0, 0);
+    this.shortBreakTimer = new Timer(0, 0);
+    this.longBreakTimer = new Timer(0, 0);
     this.intervalId = undefined;
     this.elements = elements;
   }
@@ -67,15 +69,25 @@ class Pomodoro {
     }
   }
 
+  getTimer(session) {
+    let timer = this.workTimer;
+    if (session != "work") {
+      timer = session == "short-break" ? this.shortBreakTimer : this.longBreakTimer;
+    }
+    return timer;
+  }
+
   loadTimerValues() {
     this.workTimer.seconds = 0;
-    this.breakTimer.seconds = 0;
+    this.shortBreakTimer.seconds = 0;
+    this.longBreakTimer.seconds = 0;
 
     // Load timer values from localstorage
     for (let session of SESSION_TYPES) {
       for (let value of TIME_VALUES) {
         let stored = localStorage.getItem(`${session}-${value}`);
-        let timer = session == "work" ? this.workTimer : this.breakTimer;
+        let timer = this.getTimer(session);
+  
         if (value == "hours") {
           timer.hours = stored != undefined ? parseInt(stored) : 0;
         } else {
@@ -86,31 +98,41 @@ class Pomodoro {
     }
   }
 
-  toggleSessionType() {
+  switchSessionType() {
     playRingTone();
 
-    if (this.isWork) {
-      this.elements.sessionHeader.innerHTML = "Break";
-      this.isWork = false;
+    if (this.sessionType == "work") {
+      this.elements.sessionHeader.innerHTML = "Short Break";
+      this.sessionType = "short-break";
+      this.breakCount += 1;
+    } else if (this.sessionType == "short-break" && this.breakCount == 4) {
+      // Transition into a long break every 4 short breaks
+      this.breakCount = 0;
+      this.sessionType = "long-break";
+      this.elements.sessionHeader.innerHTML = "Long Break";
     } else {
+      this.sessionType = "work";
       this.elements.sessionHeader.innerHTML = "Work";
-      this.isWork = true;
     }
 
     this.loadTimerValues();
   }
 
   updateTimer() {
-    let timer = this.isWork ? this.workTimer : this.breakTimer;
+    let timer = this.getTimer(this.sessionType);
     timer.countdown();
     if (timer.hours < 0) {
-      this.toggleSessionType();
+      this.switchSessionType();
     }
 
-    let newTimer = this.isWork ? this.workTimer : this.breakTimer;
+    let newTimer = this.getTimer(this.sessionType);
     this.elements.timeHeader.innerHTML = newTimer.format();
 
-    document.title = `${this.isWork ? "Work" : "Break"} - ${newTimer.format()}`;
+    let title = "Work";
+    if (this.sessionType.includes("break")) {
+      title = this.sessionType == "short-break" ? "Short break" : "Long break";
+    }
+    document.title = `${title} - ${newTimer.format()}`;
   }
 }
 
@@ -186,7 +208,7 @@ window.onload = () => {
   let pomodoro = new Pomodoro(elements);
 
   timerToggle.onclick = () => pomodoro.toggleTimer();
-  pomodoro.toggleSessionType(); // Start off with a work session
+  pomodoro.loadTimerValues();
   timeHeader.innerHTML = pomodoro.workTimer.format();
   bindPopupEvents(pomodoro);
   initTimerInputs();
