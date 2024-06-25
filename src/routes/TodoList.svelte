@@ -1,42 +1,16 @@
-<script lang="ts">
-    import type { Task } from "../lib/todo";
+<script>
+    import { setContext } from "svelte";
+    import { RootTask } from "../lib/todo";
     import TaskComponent from "./TaskComponent.svelte";
 
-    const tasks: Task[] = [
-        {
-            name: "Task #1",
-            done: false,
-            children: [
-                {
-                    name: "Sub task #1",
-                    done: false,
-                    children: [
-                        {
-                            name: "Sub sub task #1",
-                            done: false,
-                            children: [],
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            name: "Task #2",
-            children: [],
-            done: false,
-        },
-        {
-            name: "Task #3",
-            children: [],
-            done: false,
-        },
-    ];
+    import { writable } from "svelte/store";
+
+    const task_tree = writable(RootTask);
+    $: console.log(task_tree); // TODO: update ui
 </script>
 
 <div class="container">
-    {#each tasks as task}
-        <TaskComponent task={task}/>
-    {/each}
+    <TaskComponent bind:task={$task_tree}/>
 </div>
 
 <style>

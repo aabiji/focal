@@ -1,36 +1,46 @@
-<script lang="ts">
-    import type { Task } from "../lib/todo";
-    export let task: Task = {name: "", children: [], done: false};
+<script>
+    export let task;
 
     let text_style = "";
     const toggleStatus = () => {
         text_style = task.done ? "done" : "";
         task.done = !task.done;
     };
-    const toggleKeyboardHandler = (event: any) => {
+    const toggleKeyboardHandler = (event) => {
         if (event.key == "Enter" || event.key == " ") {
             toggleStatus();
         }
     };
+
+    const addSubTask = () => {
+        task.children.push({
+            name: "test",
+            children: [],
+            done: false,
+            is_root: false,
+        });
+        console.log(task);
+    };
 </script>
 
-<div class="container" role="button" tabindex="0"
-     on:click={() => toggleStatus()}
-     on:keydown={(event) => toggleKeyboardHandler(event)}>
+<div class="container">
     <div class="info">
-        <div class="text">
+        <div class="text" on:keydown={(event) => toggleKeyboardHandler(event)}
+             on:click={() => toggleStatus()} role="button" tabindex="0">
             <p class={text_style}> {task.name} </p>
         </div>
 
         <div class="controls">
-            <button class="add"> + </button>
-            <button class="remove"> - </button>
+            <button class="add" on:click={() => addSubTask()}> + </button>
+            {#if !task.is_root}
+                <button class="remove"> - </button>
+            {/if}
         </div>
     </div>
 
     <div class="children">
         {#each task.children as child_task}
-            <svelte:self task={child_task}/>
+            <svelte:self bind:task={child_task}/>
         {/each}
     </div>
 </div>
