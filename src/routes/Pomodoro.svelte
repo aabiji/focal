@@ -6,10 +6,11 @@
     let minutes = 0;
     let seconds = 0;
     const loadTimeValues = () => {
+        seconds = 59;
         let duration = $app.getSessionDuration();
         hours   = Math.round(duration / 60);
-        minutes = hours * 60 - duration;
-        seconds = 59;
+        let x = minutes = hours * 60 - duration;
+        minutes = hours > 0 ? x : duration;
     }
 
     let time = "00:00:00";
