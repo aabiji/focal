@@ -1,4 +1,5 @@
 <script>
+    import { Task } from "../lib/todo";
     export let task;
 
     let text_style = "";
@@ -13,13 +14,8 @@
     };
 
     const addSubTask = () => {
-        task.children.push({
-            name: "test",
-            children: [],
-            done: false,
-            is_root: false,
-        });
-        console.log(task);
+        let new_task = new Task("test", false);
+        task.children = [...task.children, new_task];
     };
 </script>
 

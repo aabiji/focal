@@ -1,15 +1,16 @@
 <script>
-    import { setContext } from "svelte";
-    import { RootTask } from "../lib/todo";
+    import { task_tree } from "../lib/todo";
     import TaskComponent from "./TaskComponent.svelte";
-
-    import { writable } from "svelte/store";
-
-    const task_tree = writable(RootTask);
-    $: console.log(task_tree); // TODO: update ui
 </script>
 
 <div class="container">
+    <!--The task_tree is an object. Since objects in
+        javascript are referenced, if we assign a field
+        in the object to another variable and change that
+        variable, the underlying object is changed also.
+        We can leverage this and bind the task_tree store to
+        our children, so that we (the parent) update when the
+        children indirectly change the task tree-->
     <TaskComponent bind:task={$task_tree}/>
 </div>
 
