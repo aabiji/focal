@@ -18,9 +18,9 @@
     .container {
         padding: 10px 10px;
         overflow-y: scroll;
-        max-height: 100%;
         max-width: 100%;
         overflow-x: hidden;
+        height: 100%;
     }
 
     ::-webkit-scrollbar {

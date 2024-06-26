@@ -1,5 +1,6 @@
 <script>
     import { Task } from "../lib/todo";
+    import Checkbox from "./Checkbox.svelte";
 
     export let task;
 
@@ -32,17 +33,29 @@
 </script>
 
 <div class="container">
-    <div class="info">
-        <div class="text" on:keydown={(event) => toggleKeyboardHandler(event)}
-             on:click={() => toggleStatus()} role="button" tabindex="0">
-            <input style={task.done ? "text-decoration: line-through;" : ""}
-                   type="text" placeholder="Your Task" bind:value={task.name}>
+    <div class="task">
+        <div class="box" on:keydown={(event) => toggleKeyboardHandler(event)}
+            on:click={() => toggleStatus()} role="button" tabindex="0">
+            <Checkbox />
+        </div>
+
+        <div class="text">
+            {#if task.is_root}
+                <h4> {task.name} </h4>
+            {:else}
+                <input type="text" placeholder="Your Task" bind:value={task.name}>
+            {/if}
         </div>
 
         <div class="controls">
-            <button class="add" on:click={() => addSubTask()}> + </button>
+            &nbsp; <!--So that the div has a width with no elements -->
+            <button class="add" on:click={() => addSubTask()}>
+                <img src="/plus.svg" alt="Add icon">
+            </button>
             {#if !task.is_root}
-                <button class="remove" on:click={() => removeTask()}> - </button>
+                <button class="remove" on:click={() => removeTask()}>
+                    <img src="/trash.svg" alt="Trash icon">
+                </button>
             {/if}
         </div>
     </div>
@@ -61,7 +74,8 @@
         font-size: 17px;
     }
 
-    .info {
+    .task {
+        height: 35px;
         display: flex;
         cursor: pointer;
         margin-bottom: 10px;
@@ -81,10 +95,25 @@
         margin-left: 25px;
     }
 
-    .add { color: green; }
-    .remove { color: red; }
+    .box {
+        margin-right: 10px;
+    }
+
+    .add {
+        color: white;
+        margin-left: 10px;
+        float: right;
+    }
+
+    .remove {
+        float: right;
+        width: 30px;
+        color: white;
+    }
+
     .controls {
         margin-left: auto;
+        min-width: 25%;
     }
 
     input {
@@ -99,6 +128,13 @@
         outline: none;
         font-size: 25px;
         cursor: pointer;
+        margin-right: -10px;
         background-color: rgba(0, 0, 0, 0);
+    }
+
+    img {
+        width: 22px;
+        height: 22px;
+        margin-top: 8px;
     }
 </style>
