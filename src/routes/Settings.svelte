@@ -1,5 +1,6 @@
 <script>
     export let show_settings_popup;
+    import { app } from "../lib/state";
 </script>
 
 {#if show_settings_popup}
@@ -17,15 +18,15 @@
         <div class="durations">
             <div class="duration">
                 <p>Work</p>
-                <input type="number" value="0">
-            </div>
-            <div class="duration">
-                <p>Long break</p>
-                <input type="number" value="0">
+                <input type="number" bind:value={$app.work_duration}>
             </div>
             <div class="duration">
                 <p>Short break</p>
-                <input type="number" value="0">
+                <input type="number" bind:value={$app.short_break_duration}>
+            </div>
+            <div class="duration">
+                <p>Long break</p>
+                <input type="number" bind:value={$app.long_break_duration}>
             </div>
         </div>
     </dialog>

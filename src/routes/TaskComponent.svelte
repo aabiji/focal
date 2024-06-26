@@ -1,16 +1,42 @@
 <script>
-    import { Task } from "../lib/todo";
+    import { Task, app } from "../lib/state";
     import Checkbox from "./Checkbox.svelte";
 
     export let task;
+    const triggerUIRefresh = () => $app.task_tree = {...$app.task_tree};
 
     const toggleStatus = () => {
-        if (!task.is_root) {
-            task.done = !task.done;
-            for (let child of task.children) {
-                child.done = !child.done;
-            }
+        task.done = !task.done;
+        for (let child of task.children) {
+            child.done = !child.done;
         }
+        triggerUIRefresh();
+    };
+
+    const addSubTask = () => {
+        task.children.push(new Task("New task", false, task));
+        triggerUIRefresh();
+    };
+
+    // Walk the tree to find the parent, then
+    // remove the task from the parent's list of tasks
+    const removeFromParent = (node, id, task) => {
+        if (id == node.id) {
+            let index = node.children.indexOf(task);
+            let before = node.children.slice(0, index);
+            let after = node.children.slice(index + 1);
+            node.children = [...before, ...after];
+            triggerUIRefresh();
+        }
+
+        for (let i = 0; i < node.children.length; i++) {
+            removeFromParent(node.children[i], id, task);
+        }
+    };
+
+    const removeTask = () => {
+        console.log(task.parent);
+        removeFromParent($app.task_tree, task.parent, task);
     };
 
     const toggleKeyboardHandler = (event) => {
@@ -18,25 +44,13 @@
             toggleStatus();
         }
     };
-
-    const addSubTask = () => {
-        let new_task = new Task("test", false, task);
-        task.children = [...task.children, new_task];
-    };
-
-    const removeTask = () => {
-        let index = task.parent.children.indexOf(task);
-        let before = task.parent.children.slice(0, index);
-        let after = task.parent.children.slice(index + 1,);
-        task.parent.children = [...before, ...after];
-    }
 </script>
 
 <div class="container">
     <div class="task">
         <div class="box" on:keydown={(event) => toggleKeyboardHandler(event)}
             on:click={() => toggleStatus()} role="button" tabindex="0">
-            <Checkbox />
+            <Checkbox done={task.done}/>
         </div>
 
         <div class="text">

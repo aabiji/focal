@@ -2,8 +2,18 @@
     import Pomodoro from "./Pomodoro.svelte";
     import TodoList from "./TodoList.svelte";
     import Settings from "./Settings.svelte";
+    import { app } from "../lib/state";
+    import { onMount } from "svelte";
 
     let show_settings_popup = false;
+    onMount(() => {
+        $app.loadFromLocalstorage(window.localStorage);
+
+        // Save in localstorage on reload or close
+        window.addEventListener("beforeunload", (event) => {
+            localStorage.setItem("data", JSON.stringify($app));
+        });
+    });
 </script>
 
 <Settings bind:show_settings_popup />

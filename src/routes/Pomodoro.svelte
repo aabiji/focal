@@ -1,30 +1,17 @@
 <script>
+    import { app } from "../lib/state";
     export let show_settings_popup;
 
-    let state = -1;
-    let break_count = 0;
-    let long_break_freq = 4;
-    let session = "Do something amazing!";
-    const changeSession = () => {
-        state = (state + 1) % 3;
-        if (state == 0) {
-            session = "Work";
-        } else if (state == 1) {
-            break_count += 1;
-            session = "Short Break";
-        } else {
-            if (break_count < long_break_freq) {
-                changeSession();
-                return;
-            }
-            session = "Long Break";
-            break_count = 0;
-        }
-    };
-
-    let seconds = 59;
+    let hours = 0;
     let minutes = 0;
-    let hours   = 0;
+    let seconds = 0;
+    const loadTimeValues = () => {
+        let duration = $app.getSessionDuration();
+        hours   = Math.round(duration / 60);
+        minutes = hours * 60 - duration;
+        seconds = 59;
+    }
+
     let time = "00:00:00";
     const tickTimer = () => {
         seconds -= 1;
@@ -38,10 +25,8 @@
         }
 
         if (hours < 0) {
-            changeSession();
-            seconds = 59;
-            minutes = 0;
-            hours = 0;
+            session = $app.gotoNextSession();
+            loadTimeValues();
         }
 
         time = "";
@@ -51,8 +36,13 @@
     }
 
     let interval;
+    let session = "Do something amazing!";
     const startTimer = () => {
-        if (state == -1) changeSession();
+        if ($app.current_session == -1) {
+            session = $app.gotoNextSession();
+            loadTimeValues();
+        }
+
         interval = setInterval(() => tickTimer(), 1000);
     };
     const stopTimer = () => clearInterval(interval);
