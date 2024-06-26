@@ -1,9 +1,15 @@
 <script>
     import Pomodoro from "./Pomodoro.svelte";
     import TodoList from "./TodoList.svelte";
+    import Settings from "./Settings.svelte";
+
+    let show_settings_popup = false;
 </script>
 
-<div class="left-side"> <Pomodoro /></div>
+<Settings bind:show_settings_popup />
+<div class="left-side">
+    <Pomodoro bind:show_settings_popup />
+</div>
 <div class="right-side"><TodoList /></div>
 
 <style>

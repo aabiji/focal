@@ -1,4 +1,6 @@
 <script>
+    export let show_settings_popup;
+
     let state = -1;
     let break_count = 0;
     let long_break_freq = 4;
@@ -76,7 +78,7 @@
         <button on:click={() => togglePlayback()}>
             <img src={icon_src} alt="play icon">
         </button>
-        <button>
+        <button on:click={() => show_settings_popup = true}>
             <img src="/settings.svg" alt="settings icon">
         </button>
     </div>
@@ -120,5 +122,6 @@
     .controls button img {
         width: 20px;
         height: 20px;
+        cursor: pointer;
     }
 </style>

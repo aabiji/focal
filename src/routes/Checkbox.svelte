@@ -22,7 +22,7 @@
 
 <style>
     :root {
-        --color: #866efb;
+        --color: #02f036;
     }
 
     .checkbox-wrapper-12 {
