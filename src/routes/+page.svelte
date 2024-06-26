@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
     import Pomodoro from "./Pomodoro.svelte";
     import TodoList from "./TodoList.svelte";
 </script>

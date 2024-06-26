@@ -1,15 +1,77 @@
-<script lang="ts">
-    let paused = false;
-    let icon_src = "/play.svg";
+<script>
+    let state = -1;
+    let break_count = 0;
+    let long_break_freq = 4;
+    let session = "Do something amazing!";
+    const changeSession = () => {
+        state = (state + 1) % 3;
+        if (state == 0) {
+            session = "Work";
+        } else if (state == 1) {
+            break_count += 1;
+            session = "Short Break";
+        } else {
+            if (break_count < long_break_freq) {
+                changeSession();
+                return;
+            }
+            session = "Long Break";
+            break_count = 0;
+        }
+    };
+
+    let seconds = 59;
+    let minutes = 0;
+    let hours   = 0;
+    let time = "00:00:00";
+    const tickTimer = () => {
+        seconds -= 1;
+        if (seconds < 0) {
+            seconds = 59;
+            minutes -= 1;
+            if (minutes < 0) {
+                minutes = 59;
+                hours -= 1;
+            }
+        }
+
+        if (hours < 0) {
+            changeSession();
+            seconds = 59;
+            minutes = 0;
+            hours = 0;
+        }
+
+        time = "";
+        time += hours.toString().padStart(2, '0') + ":";
+        time += minutes.toString().padStart(2, '0') + ":";
+        time += seconds.toString().padStart(2, '0');
+    }
+
+    let interval;
+    const startTimer = () => {
+        if (state == -1) changeSession();
+        interval = setInterval(() => tickTimer(), 1000);
+    };
+    const stopTimer = () => clearInterval(interval);
+
+    let paused = true;
+    let icon_src = `/${paused ? "play.svg" : "pause.svg"}`;
     const togglePlayback = () => {
+        if (paused) {
+            paused = false;
+            startTimer();
+        } else {
+            paused = true;
+            stopTimer();
+        }
         icon_src = `/${paused ? "play.svg" : "pause.svg"}`;
-        paused = !paused;
     };
 </script>
 
 <div class="container">
-    <p> Work session </p>
-    <h1> 00:00:00 </h1>
+    <p> {session} </p>
+    <h1> {time} </h1>
     <div class="controls">
         <button on:click={() => togglePlayback()}>
             <img src={icon_src} alt="play icon">

@@ -1,12 +1,17 @@
 <script>
     import { Task } from "../lib/todo";
+
     export let task;
 
-    let text_style = "";
     const toggleStatus = () => {
-        text_style = task.done ? "done" : "";
-        task.done = !task.done;
+        if (!task.is_root) {
+            task.done = !task.done;
+            for (let child of task.children) {
+                child.done = !child.done;
+            }
+        }
     };
+
     const toggleKeyboardHandler = (event) => {
         if (event.key == "Enter" || event.key == " ") {
             toggleStatus();
