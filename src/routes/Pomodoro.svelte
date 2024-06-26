@@ -9,8 +9,8 @@
         seconds = 59;
         let duration = $app.getSessionDuration();
         hours   = Math.round(duration / 60);
-        let x = minutes = hours * 60 - duration;
-        minutes = hours > 0 ? x : duration;
+        let x = hours * 60 - duration - 1;
+        minutes = hours > 0 ? x : duration - 1;
     }
 
     let time = "00:00:00";
@@ -28,6 +28,12 @@
         if (hours < 0) {
             session = $app.gotoNextSession();
             loadTimeValues();
+
+            const body = $app.getSessionMessage();
+            new Notification("Focal", { body, icon: "" } );
+
+            const audio = new Audio("/tone.mp3");
+            audio.play();
         }
 
         time = "";
@@ -37,7 +43,7 @@
     }
 
     let interval;
-    let session = "Do something amazing!";
+    let session = "Focus time!";
     const startTimer = () => {
         if ($app.current_session == -1) {
             session = $app.gotoNextSession();

@@ -55,6 +55,12 @@ export class App {
         return "Long Break";
     }
 
+    getSessionMessage() {
+        if (this.current_session == 0) return "Back to work!";
+        if (this.current_session == 1) return "Take a short break";
+        return "Take a long break";
+    }
+
     getSessionDuration() {
         if (this.current_session == 0) return this.work_duration;
         if (this.current_session == 1) return this.short_break_duration;

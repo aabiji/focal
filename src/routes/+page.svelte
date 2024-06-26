@@ -13,6 +13,8 @@
         window.addEventListener("beforeunload", (event) => {
             localStorage.setItem("data", JSON.stringify($app));
         });
+
+        Notification.requestPermission();
     });
 </script>
 
