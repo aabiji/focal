@@ -19,22 +19,30 @@
     };
 
     const addSubTask = () => {
-        let new_task = new Task("test", false);
+        let new_task = new Task("test", false, task);
         task.children = [...task.children, new_task];
     };
+
+    const removeTask = () => {
+        let index = task.parent.children.indexOf(task);
+        let before = task.parent.children.slice(0, index);
+        let after = task.parent.children.slice(index + 1,);
+        task.parent.children = [...before, ...after];
+    }
 </script>
 
 <div class="container">
     <div class="info">
         <div class="text" on:keydown={(event) => toggleKeyboardHandler(event)}
              on:click={() => toggleStatus()} role="button" tabindex="0">
-            <p class={text_style}> {task.name} </p>
+            <input style={task.done ? "text-decoration: line-through;" : ""}
+                   type="text" placeholder="Your Task" bind:value={task.name}>
         </div>
 
         <div class="controls">
             <button class="add" on:click={() => addSubTask()}> + </button>
             {#if !task.is_root}
-                <button class="remove"> - </button>
+                <button class="remove" on:click={() => removeTask()}> - </button>
             {/if}
         </div>
     </div>
@@ -50,7 +58,7 @@
     .container {
         width: 100%;
         height: fit-content;
-        font-size: 16px;
+        font-size: 17px;
     }
 
     .info {
@@ -60,16 +68,13 @@
         align-items: center;
         border-radius: 5px;
         padding-left: 10px;
+        padding-right: 10px;
         background-color: rgba(255, 255, 255, 0.7);
     }
 
     .text {
         width: 80%;
         overflow-wrap: break-word;
-    }
-
-    .done {
-        text-decoration: line-through;
     }
 
     .children {
@@ -80,6 +85,13 @@
     .remove { color: red; }
     .controls {
         margin-left: auto;
+    }
+
+    input {
+        border: none;
+        outline: none;
+        background-color: rgba(0, 0, 0, 0);
+        font-size: 17px;
     }
 
     button {
