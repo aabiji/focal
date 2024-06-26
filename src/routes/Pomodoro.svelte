@@ -107,6 +107,7 @@
         margin-bottom: -20px;
         font-size: 20px;
         color: white;
+        font-weight: bold;
     }
 
     .controls button {

@@ -31,7 +31,7 @@
         padding: 0px;
         margin: 0px;
         overflow: hidden;
-        background: linear-gradient(to right, #e55d87, #5fc3e4);
+        background: linear-gradient(to right, #67B26F, #4ca2cd);
         background-repeat: no-repeat;
         background-attachment: fixed;
         font-family: Arial, Helvetica, sans-serif;
