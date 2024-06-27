@@ -89,7 +89,7 @@
             <img src={icon_src} alt="play icon">
         </button>
         <button on:click={() => show_settings_popup = true}>
-            <img src="/settings.svg" alt="settings icon">
+            <img src="settings.svg" alt="settings icon">
         </button>
     </div>
 </div>
