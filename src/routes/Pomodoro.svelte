@@ -85,11 +85,6 @@
 </div>
 
 <style>
-    @font-face {
-        font-family: "Arial Rounded";
-        src: url("/ArialRounded.ttf");
-    }
-
     .container {
         width: 100%;
         height: 100%;

@@ -2,23 +2,29 @@
     import Pomodoro from "./Pomodoro.svelte";
     import TodoList from "./TodoList.svelte";
     import Settings from "./Settings.svelte";
+
     import { app } from "../lib/state";
     import { onMount } from "svelte";
 
-    // TODO: loading animation while waiting for player to load
     let youtube_player;
+    let player_ready = false;
     let player_id = "youtube-player";
     let playlist_id = "PL_TkPSb3IjrVI5j26eIR_E7DAUqM2KE3_";
+    const on_video_ready = () => player_ready = true;
     const load_video = () => {
         youtube_player = new YT.Player(player_id, {
-            height: "200",
-            width: "200",
+            height: "0",
+            width: "0",
             videoId: "jfKfPfyJRdk",
             playerVars: {
-                "autoplay": 0,
-                "listType": "playlist",
-                "list": playlist_id
+                autoplay: 0,
+                listType: "playlist",
+                list: playlist_id,
+                loop: 1,
             },
+            events: {
+                onReady: on_video_ready,
+            }
         });
     };
 
@@ -27,7 +33,7 @@
         $app.loadFromLocalstorage(window.localStorage);
 
         // Save in localstorage on reload or close
-        window.addEventListener("beforeunload", (event) => {
+        window.addEventListener("beforeunload", () => {
             localStorage.setItem("data", JSON.stringify($app));
         });
 
@@ -41,18 +47,28 @@
     });
 </script>
 
+<!---Embedded youtube player-->
 <svelte:head>
     <script src="https://www.youtube.com/iframe_api"></script>
 </svelte:head>
 <div id={player_id} class="yt-player"></div>
 
-<Settings bind:show_settings_popup />
-<div class="left-side">
-    <Pomodoro bind:show_settings_popup bind:youtube_player />
-</div>
-<div class="right-side"><TodoList /></div>
+{#if player_ready}
+    <Settings bind:show_settings_popup />
+    <div class="left-side">
+        <Pomodoro bind:show_settings_popup bind:youtube_player />
+    </div>
+    <div class="right-side"><TodoList /></div>
+{:else}
+    <div class="loading-animation"></div>
+{/if}
 
 <style>
+    @font-face {
+        font-family: "Arial Rounded";
+        src: url("/ArialRounded.ttf");
+    }
+
     :global(body) {
         width: 100%;
         height: 100%;
@@ -68,6 +84,23 @@
     .yt-player {
         display: none;
     }
+
+    .loading-animation {
+        top: 45%;
+        left: 35%;
+        color: white;
+        font-weight: bold;
+        font-family: "Arial Rounded";
+        font-size: 50px;
+        animation: l1 1s linear infinite alternate;
+        position: absolute;
+    }
+
+    .loading-animation:before {
+        content: "Loading Focal..."
+    }
+
+    @keyframes l1 {to{opacity: 0}}
 
     .left-side {
         position: absolute;
