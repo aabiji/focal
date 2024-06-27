@@ -1,23 +1,35 @@
 <script>
+    import { app } from "./state";
     export let show_settings_popup;
-    import { app } from "../lib/state";
 </script>
 
 {#if show_settings_popup}
 <div class="backdrop">
     <dialog open>
-        <div class="header">
-            <h1> Settings </h1>
-            <button class="close"
-            on:click={() => show_settings_popup = false}>
-                <img src="/close.svg" alt="Close icon">
-            </button>
+        <button class="close"
+        on:click={() => show_settings_popup = false}>
+            <img src="/close.svg" alt="Close icon">
+        </button>
+
+        <div>
+            <label>
+                <input type="checkbox" bind:checked={$app.play_ringtone}>
+                Ring on session switch
+            </label>
+            <label>
+                <input type="checkbox" bind:checked={$app.play_ringtone}>
+                Notify on session switch
+            </label>
+            <label>
+                <input type="checkbox" bind:checked={$app.play_music}>
+                Play background music
+            </label>
         </div>
 
-        <h3> Session durations (minutes) </h3>
+        <h3> Durations in minutes </h3>
         <div class="durations">
             <div class="duration">
-                <p>Work</p>
+                <p>Work session</p>
                 <input type="number" bind:value={$app.work_duration}>
             </div>
             <div class="duration">
@@ -38,7 +50,7 @@
         top: 50%;
         border: none;
         width: 30%;
-        height: 30%;
+        height: fit-content;
         margin: 0 auto;
         border-radius: 10px;
         transform: translateY(-80%);
@@ -54,16 +66,11 @@
         background-color: rgba(0, 0, 0, 0.5);
     }
 
-    .header {
-        display: flex;
-        align-items: center;
-    }
-
     .close {
-        margin-left: auto;
-        cursor: pointer;
         border: none;
         outline: none;
+        cursor: pointer;
+        float: right;
         background-color: rgba(0, 0, 0, 0);
     }
 
@@ -84,8 +91,34 @@
         margin-right: 15px;
     }
 
+    label {
+        margin-top: 10px;
+        font-size: 16px;
+        display: block;
+    }
+
+    input {
+        border: none;
+        outline: none;
+        border-bottom: 1px solid #67B26F;
+    }
+
+    input:active, input:hover {
+        background-color: #fcfcfc;
+    }
+
     input[type=number] {
         width: 50px;
         outline: none;
+    }
+
+    input[type=checkbox] {
+        width: 18px;
+        height: 18px;
+        margin-right: 3px;
+        cursor: pointer;
+        vertical-align: middle;
+        position: relative;
+        bottom: 1px;
     }
 </style>

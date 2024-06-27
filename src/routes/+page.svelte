@@ -1,37 +1,29 @@
 <script>
     import Pomodoro from "./Pomodoro.svelte";
-    import TodoList from "./TodoList.svelte";
+    import TaskTree from "./TaskTree.svelte";
     import Settings from "./Settings.svelte";
 
-    import { app } from "../lib/state";
+    import { app } from "./state";
     import { onMount } from "svelte";
 
     let youtube_player;
     let player_ready = false;
     let player_id = "youtube-player";
-    let playlist_id = "PL_TkPSb3IjrVI5j26eIR_E7DAUqM2KE3_";
+    let video_id = "jfKfPfyJRdk"; // Lofi Girl livestream
     const on_video_ready = () => player_ready = true;
     const load_video = () => {
         youtube_player = new YT.Player(player_id, {
             height: "0",
             width: "0",
-            videoId: "jfKfPfyJRdk",
-            playerVars: {
-                autoplay: 0,
-                listType: "playlist",
-                list: playlist_id,
-                loop: 1,
-            },
-            events: {
-                onReady: on_video_ready,
-            }
+            videoId: video_id,
+            playerVars: { autoplay: 0, loop: 1 },
+            events: { onReady: on_video_ready }
         });
     };
 
     let show_settings_popup = false;
     onMount(() => {
         $app.loadFromLocalstorage(window.localStorage);
-
         // Save in localstorage on reload or close
         window.addEventListener("beforeunload", () => {
             localStorage.setItem("data", JSON.stringify($app));
@@ -43,7 +35,9 @@
             window.onYouTubeIframeAPIReady = load_video;
         }
 
-        Notification.requestPermission();
+        if ($app.show_notification) {
+            Notification.requestPermission();
+        }
     });
 </script>
 
@@ -58,7 +52,7 @@
     <div class="left-side">
         <Pomodoro bind:show_settings_popup bind:youtube_player />
     </div>
-    <div class="right-side"><TodoList /></div>
+    <div class="right-side"><TaskTree /></div>
 {:else}
     <div class="loading-animation"></div>
 {/if}

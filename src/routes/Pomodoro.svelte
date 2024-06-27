@@ -1,8 +1,29 @@
 <script>
-    import { app } from "../lib/state";
+    import { app } from "./state";
 
     export let show_settings_popup;
     export let youtube_player;
+
+    const toggleMusicPlayback = () => {
+        if (!$app.play_music) return;
+        if (youtube_player.getPlayerState() == 1) {
+            youtube_player.pauseVideo();
+        } else {
+            youtube_player.playVideo();
+        }
+    };
+
+    const signalSessionChange = () => {
+        if ($app.show_notification) {
+            const body = $app.getSessionMessage();
+            new Notification("Focal", { body, icon: "" } );
+        }
+
+        if ($app.play_music) {
+            const audio = new Audio("/tone.mp3");
+            audio.play();
+        }
+    }
 
     let hours = 0;
     let minutes = 0;
@@ -30,12 +51,7 @@
         if (hours < 0) {
             session = $app.gotoNextSession();
             loadTimeValues();
-
-            const body = $app.getSessionMessage();
-            new Notification("Focal", { body, icon: "" } );
-
-            const audio = new Audio("/tone.mp3");
-            audio.play();
+            signalSessionChange();
         }
 
         time = "";
@@ -58,15 +74,9 @@
     let paused = true;
     let icon_src = `/${paused ? "play.svg" : "pause.svg"}`;
     const togglePlayback = () => {
-        if (paused) {
-            paused = false;
-            startTimer();
-            youtube_player.playVideo();
-        } else {
-            paused = true;
-            stopTimer();
-            youtube_player.pauseVideo();
-        }
+        paused ? startTimer() : stopTimer();
+        toggleMusicPlayback();
+        paused = !paused;
         icon_src = `/${paused ? "play.svg" : "pause.svg"}`;
     };
 </script>

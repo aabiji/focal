@@ -1,5 +1,5 @@
 <script>
-    import { Task, app } from "../lib/state";
+    import { Task, app } from "./state";
     import Checkbox from "./Checkbox.svelte";
 
     export let task;

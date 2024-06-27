@@ -14,6 +14,9 @@ export class Task {
 
 export class App {
     constructor() {
+        this.play_music = true;
+        this.play_ringtone = true;
+        this.show_notification = true;
         this.work_duration = 25;
         this.short_break_duration = 5;
         this.long_break_duration = 15;
