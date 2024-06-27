@@ -8,7 +8,7 @@
     <dialog open>
         <button class="close"
         on:click={() => show_settings_popup = false}>
-            <img src="/close.svg" alt="Close icon">
+            <img src="close.svg" alt="Close icon">
         </button>
 
         <div>

@@ -61,11 +61,11 @@
         <div class="controls">
             &nbsp; <!--So that the div has a width with no elements -->
             <button class="add" on:click={() => addSubTask()}>
-                <img src="/plus.svg" alt="Add icon">
+                <img src="plus.svg" alt="Add icon">
             </button>
             {#if !task.is_root}
                 <button class="remove" on:click={() => removeTask()}>
-                    <img src="/trash.svg" alt="Trash icon">
+                    <img src="trash.svg" alt="Trash icon">
                 </button>
             {/if}
         </div>

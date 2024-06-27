@@ -20,7 +20,7 @@
         }
 
         if ($app.play_music) {
-            const audio = new Audio("/tone.mp3");
+            const audio = new Audio("tone.mp3");
             audio.play();
         }
     }
@@ -72,12 +72,12 @@
     const stopTimer = () => clearInterval(interval);
 
     let paused = true;
-    let icon_src = `/${paused ? "play.svg" : "pause.svg"}`;
+    let icon_src = `${paused ? "play.svg" : "pause.svg"}`;
     const togglePlayback = () => {
         paused ? startTimer() : stopTimer();
         toggleMusicPlayback();
         paused = !paused;
-        icon_src = `/${paused ? "play.svg" : "pause.svg"}`;
+        icon_src = `${paused ? "play.svg" : "pause.svg"}`;
     };
 </script>
 

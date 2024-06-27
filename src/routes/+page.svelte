@@ -60,7 +60,7 @@
 <style>
     @font-face {
         font-family: "Arial Rounded";
-        src: url("/ArialRounded.ttf");
+        src: url("ArialRounded.ttf");
     }
 
     :global(body) {
