@@ -5,6 +5,23 @@
     import { app } from "../lib/state";
     import { onMount } from "svelte";
 
+    // TODO: loading animation while waiting for player to load
+    let youtube_player;
+    let player_id = "youtube-player";
+    let playlist_id = "PL_TkPSb3IjrVI5j26eIR_E7DAUqM2KE3_";
+    const load_video = () => {
+        youtube_player = new YT.Player(player_id, {
+            height: "200",
+            width: "200",
+            videoId: "jfKfPfyJRdk",
+            playerVars: {
+                "autoplay": 0,
+                "listType": "playlist",
+                "list": playlist_id
+            },
+        });
+    };
+
     let show_settings_popup = false;
     onMount(() => {
         $app.loadFromLocalstorage(window.localStorage);
@@ -14,13 +31,24 @@
             localStorage.setItem("data", JSON.stringify($app));
         });
 
+        if (window.YT) {
+            load_video();
+        } else {
+            window.onYouTubeIframeAPIReady = load_video;
+        }
+
         Notification.requestPermission();
     });
 </script>
 
+<svelte:head>
+    <script src="https://www.youtube.com/iframe_api"></script>
+</svelte:head>
+<div id={player_id} class="yt-player"></div>
+
 <Settings bind:show_settings_popup />
 <div class="left-side">
-    <Pomodoro bind:show_settings_popup />
+    <Pomodoro bind:show_settings_popup bind:youtube_player />
 </div>
 <div class="right-side"><TodoList /></div>
 
@@ -35,6 +63,10 @@
         background-repeat: no-repeat;
         background-attachment: fixed;
         font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .yt-player {
+        display: none;
     }
 
     .left-side {

@@ -1,6 +1,8 @@
 <script>
     import { app } from "../lib/state";
+
     export let show_settings_popup;
+    export let youtube_player;
 
     let hours = 0;
     let minutes = 0;
@@ -49,7 +51,6 @@
             session = $app.gotoNextSession();
             loadTimeValues();
         }
-
         interval = setInterval(() => tickTimer(), 1000);
     };
     const stopTimer = () => clearInterval(interval);
@@ -60,9 +61,11 @@
         if (paused) {
             paused = false;
             startTimer();
+            youtube_player.playVideo();
         } else {
             paused = true;
             stopTimer();
+            youtube_player.pauseVideo();
         }
         icon_src = `/${paused ? "play.svg" : "pause.svg"}`;
     };

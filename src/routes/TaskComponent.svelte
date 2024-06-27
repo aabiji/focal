@@ -34,10 +34,7 @@
         }
     };
 
-    const removeTask = () => {
-        console.log(task.parent);
-        removeFromParent($app.task_tree, task.parent, task);
-    };
+    const removeTask = () => removeFromParent($app.task_tree, task.parent, task);
 
     const toggleKeyboardHandler = (event) => {
         if (event.key == "Enter" || event.key == " ") {
