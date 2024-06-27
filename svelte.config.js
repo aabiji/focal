@@ -16,7 +16,7 @@ const config = {
 			pages: "build",
 			assets: "build",
 		}),
-
+		appDir: 'appDir',
 		paths: {
 			assets: "https://aabiji.github.io/focal",
 			base: "/focal"
