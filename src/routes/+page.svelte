@@ -10,14 +10,14 @@
     let player_ready = false;
     let player_id = "youtube-player";
     let video_id = "jfKfPfyJRdk"; // Lofi Girl livestream
-    const on_video_ready = () => player_ready = true;
+    const on_video_ready = () => (player_ready = true);
     const load_video = () => {
         youtube_player = new YT.Player(player_id, {
             height: "0",
             width: "0",
             videoId: video_id,
             playerVars: { autoplay: 0, loop: 1 },
-            events: { onReady: on_video_ready }
+            events: { onReady: on_video_ready },
         });
     };
 
@@ -69,7 +69,7 @@
         padding: 0px;
         margin: 0px;
         overflow: hidden;
-        background: linear-gradient(to right, #67B26F, #4ca2cd);
+        background: linear-gradient(to right, #67b26f, #4ca2cd);
         background-repeat: no-repeat;
         background-attachment: fixed;
         font-family: Arial, Helvetica, sans-serif;
@@ -91,10 +91,14 @@
     }
 
     .loading-animation:before {
-        content: "Loading Focal..."
+        content: "Loading Focal...";
     }
 
-    @keyframes l1 {to{opacity: 0}}
+    @keyframes l1 {
+        to {
+            opacity: 0;
+        }
+    }
 
     .left-side {
         position: absolute;

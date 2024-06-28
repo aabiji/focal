@@ -1,9 +1,9 @@
 <script>
-    import { Task, app } from "./state";
+    import { Task, app, get_path } from "./state";
     import Checkbox from "./Checkbox.svelte";
 
     export let task;
-    const triggerUIRefresh = () => $app.task_tree = {...$app.task_tree};
+    const triggerUIRefresh = () => ($app.task_tree = { ...$app.task_tree });
 
     const toggleStatus = () => {
         task.done = !task.done;
@@ -34,7 +34,8 @@
         }
     };
 
-    const removeTask = () => removeFromParent($app.task_tree, task.parent, task);
+    const removeTask = () =>
+        removeFromParent($app.task_tree, task.parent, task);
 
     const toggleKeyboardHandler = (event) => {
         if (event.key == "Enter" || event.key == " ") {
@@ -45,27 +46,36 @@
 
 <div class="container">
     <div class="task">
-        <div class="box" on:keydown={(event) => toggleKeyboardHandler(event)}
-            on:click={() => toggleStatus()} role="button" tabindex="0">
-            <Checkbox done={task.done}/>
+        <div
+            class="box"
+            on:keydown={(event) => toggleKeyboardHandler(event)}
+            on:click={() => toggleStatus()}
+            role="button"
+            tabindex="0"
+        >
+            <Checkbox done={task.done} />
         </div>
 
         <div class="text">
             {#if task.is_root}
-                <h4> {task.name} </h4>
+                <h4>{task.name}</h4>
             {:else}
-                <input type="text" placeholder="Your Task" bind:value={task.name}>
+                <input
+                    type="text"
+                    placeholder="Your Task"
+                    bind:value={task.name}
+                />
             {/if}
         </div>
 
         <div class="controls">
             &nbsp; <!--So that the div has a width with no elements -->
             <button class="add" on:click={() => addSubTask()}>
-                <img src="plus.svg" alt="Add icon">
+                <img src={get_path("plus.svg")} alt="Add icon" />
             </button>
             {#if !task.is_root}
                 <button class="remove" on:click={() => removeTask()}>
-                    <img src="trash.svg" alt="Trash icon">
+                    <img src={get_path("trash.svg")} alt="Trash icon" />
                 </button>
             {/if}
         </div>
@@ -73,7 +83,7 @@
 
     <div class="children">
         {#each task.children as child_task}
-            <svelte:self bind:task={child_task}/>
+            <svelte:self bind:task={child_task} />
         {/each}
     </div>
 </div>

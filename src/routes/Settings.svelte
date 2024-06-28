@@ -1,48 +1,56 @@
 <script>
-    import { app } from "./state";
+    import { app, get_path } from "./state";
     export let show_settings_popup;
 </script>
 
 {#if show_settings_popup}
-<div class="backdrop">
-    <dialog open>
-        <button class="close"
-        on:click={() => show_settings_popup = false}>
-            <img src="close.svg" alt="Close icon">
-        </button>
+    <div class="backdrop">
+        <dialog open>
+            <button
+                class="close"
+                on:click={() => (show_settings_popup = false)}
+            >
+                <img src={get_path("close.svg")} alt="Close icon" />
+            </button>
 
-        <div>
-            <label>
-                <input type="checkbox" bind:checked={$app.play_ringtone}>
-                Ring on session switch
-            </label>
-            <label>
-                <input type="checkbox" bind:checked={$app.play_ringtone}>
-                Notify on session switch
-            </label>
-            <label>
-                <input type="checkbox" bind:checked={$app.play_music}>
-                Play background music
-            </label>
-        </div>
+            <div>
+                <label>
+                    <input type="checkbox" bind:checked={$app.play_ringtone} />
+                    Ring on session switch
+                </label>
+                <label>
+                    <input type="checkbox" bind:checked={$app.play_ringtone} />
+                    Notify on session switch
+                </label>
+                <label>
+                    <input type="checkbox" bind:checked={$app.play_music} />
+                    Play background music
+                </label>
+            </div>
 
-        <h3> Durations in minutes </h3>
-        <div class="durations">
-            <div class="duration">
-                <p>Work session</p>
-                <input type="number" bind:value={$app.work_duration}>
+            <h3>Durations in minutes</h3>
+            <div class="durations">
+                <div class="duration">
+                    <p>Work session</p>
+                    <input type="number" bind:value={$app.work_duration} />
+                </div>
+                <div class="duration">
+                    <p>Short break</p>
+                    <input
+                        type="number"
+                        bind:value={$app.short_break_duration}
+                    />
+                </div>
+                <div class="duration">
+                    <p>Long break</p>
+                    <input
+                        type="number"
+                        bind:value={$app.long_break_duration}
+                    />
+                </div>
             </div>
-            <div class="duration">
-                <p>Short break</p>
-                <input type="number" bind:value={$app.short_break_duration}>
-            </div>
-            <div class="duration">
-                <p>Long break</p>
-                <input type="number" bind:value={$app.long_break_duration}>
-            </div>
-        </div>
-    </dialog>
-</div>
+        </dialog>
+    </div>
 {/if}
 
 <style>
@@ -100,19 +108,20 @@
     input {
         border: none;
         outline: none;
-        border-bottom: 1px solid #67B26F;
+        border-bottom: 1px solid #67b26f;
     }
 
-    input:active, input:hover {
+    input:active,
+    input:hover {
         background-color: #fcfcfc;
     }
 
-    input[type=number] {
+    input[type="number"] {
         width: 50px;
         outline: none;
     }
 
-    input[type=checkbox] {
+    input[type="checkbox"] {
         width: 18px;
         height: 18px;
         margin-right: 3px;

@@ -1,5 +1,5 @@
 <script>
-    import { app } from "./state";
+    import { app, get_path } from "./state";
 
     export let show_settings_popup;
     export let youtube_player;
@@ -16,14 +16,14 @@
     const signalSessionChange = () => {
         if ($app.show_notification) {
             const body = $app.getSessionMessage();
-            new Notification("Focal", { body, icon: "" } );
+            new Notification("Focal", { body, icon: "" });
         }
 
         if ($app.play_music) {
-            const audio = new Audio("tone.mp3");
+            const audio = new Audio(get_path("tone.mp3"));
             audio.play();
         }
-    }
+    };
 
     let hours = 0;
     let minutes = 0;
@@ -31,10 +31,10 @@
     const loadTimeValues = () => {
         seconds = 59;
         let duration = $app.getSessionDuration();
-        hours   = Math.round(duration / 60);
+        hours = Math.floor(duration / 60);
         let x = hours * 60 - duration - 1;
         minutes = hours > 0 ? x : duration - 1;
-    }
+    };
 
     let time = "00:00:00";
     const tickTimer = () => {
@@ -55,10 +55,10 @@
         }
 
         time = "";
-        time += hours.toString().padStart(2, '0') + ":";
-        time += minutes.toString().padStart(2, '0') + ":";
-        time += seconds.toString().padStart(2, '0');
-    }
+        time += hours.toString().padStart(2, "0") + ":";
+        time += minutes.toString().padStart(2, "0") + ":";
+        time += seconds.toString().padStart(2, "0");
+    };
 
     let interval;
     let session = "Focus time!";
@@ -72,24 +72,24 @@
     const stopTimer = () => clearInterval(interval);
 
     let paused = true;
-    let icon_src = `${paused ? "play.svg" : "pause.svg"}`;
+    let icon_src = paused ? get_path("play.svg") : get_path("pause.svg");
     const togglePlayback = () => {
         paused ? startTimer() : stopTimer();
         toggleMusicPlayback();
         paused = !paused;
-        icon_src = `${paused ? "play.svg" : "pause.svg"}`;
+        icon_src = paused ? get_path("play.svg") : get_path("pause.svg");
     };
 </script>
 
 <div class="container">
-    <p> {session} </p>
-    <h1> {time} </h1>
+    <p>{session}</p>
+    <h1>{time}</h1>
     <div class="controls">
         <button on:click={() => togglePlayback()}>
-            <img src={icon_src} alt="play icon">
+            <img src={icon_src} alt="play icon" />
         </button>
-        <button on:click={() => show_settings_popup = true}>
-            <img src="settings.svg" alt="settings icon">
+        <button on:click={() => (show_settings_popup = true)}>
+            <img src={get_path("settings.svg")} alt="settings icon" />
         </button>
     </div>
 </div>
