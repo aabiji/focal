@@ -1,15 +1,20 @@
 <script>
-    import { app, get_path } from "./state";
+    import { app, get_path, video_ids } from "./app";
     export let show_settings_popup;
+    export let reload_player;
+
+    let before = $app.video_id;
+    const close = () => {
+        show_settings_popup = false;
+        reload_player = $app.video_id != before;
+        before = $app.video_id;
+    };
 </script>
 
 {#if show_settings_popup}
     <div class="backdrop">
         <dialog open>
-            <button
-                class="close"
-                on:click={() => (show_settings_popup = false)}
-            >
+            <button class="close" on:click={() => close()}>
                 <img src={get_path("close.svg")} alt="Close icon" />
             </button>
 
@@ -27,6 +32,18 @@
                     Play background music
                 </label>
             </div>
+
+            {#if $app.play_music}
+                <label>
+                    Music choice:
+                    <select bind:value={$app.video_id}>
+                        <option value={video_ids.lofi}> Lofi beats </option>
+                        <option value={video_ids.classical}> Classical </option>
+                        <option value={video_ids.nature}> Nature </option>
+                        <option value={video_ids.jazz}> Jazz </option>
+                    </select>
+                </label>
+            {/if}
 
             <h3>Durations in minutes</h3>
             <div class="durations">

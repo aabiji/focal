@@ -1,5 +1,5 @@
 <script>
-    import { Task, app, get_path } from "./state";
+    import { Task, app, get_path } from "./app";
     import Checkbox from "./Checkbox.svelte";
     import Input from "./Input.svelte";
 

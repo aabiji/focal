@@ -1,5 +1,5 @@
 <script>
-    import { app, get_path } from "./state";
+    import { app, get_path } from "./app";
 
     export let show_settings_popup;
     export let youtube_player;

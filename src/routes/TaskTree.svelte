@@ -1,5 +1,5 @@
 <script>
-    import { app } from "./state";
+    import { app } from "./app";
     import Task from "./Task.svelte";
 </script>
 
@@ -11,7 +11,7 @@
         We can leverage this and bind the task_tree store to
         our children, so that we (the parent) update when the
         children indirectly change the task tree-->
-    <Task bind:task={$app.task_tree}/>
+    <Task bind:task={$app.task_tree} />
 </div>
 
 <style>

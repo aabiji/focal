@@ -1,6 +1,13 @@
 import { writable } from "svelte/store";
 import { dev } from "$app/environment";
 
+export const video_ids = {
+  jazz: "fx67Lg5oSgM",
+  classical: "Hlp6aawXVoY",
+  lofi: "jfKfPfyJRdk",
+  nature: "eKFTSSKCzWA",
+};
+
 export function get_path(name) {
   return dev ? `/${name}` : name;
 }
@@ -28,6 +35,7 @@ export class App {
     this.long_break_duration = 15;
     this.break_count = 0;
     this.current_session = -1;
+    this.video_id = video_ids.lofi;
     this.task_tree = new Task("Your tasks", true, null, false);
   }
 
