@@ -16,7 +16,7 @@
     };
 
     const addSubTask = () => {
-        task.children.push(new Task("New task", false, task));
+        task.children.push(new Task("", false, task, true));
         triggerUIRefresh();
     };
 
@@ -62,7 +62,10 @@
             {#if task.is_root}
                 <p>{task.name}</p>
             {:else}
-                <Input bind:value={task.name} />
+                <Input
+                    bind:value={task.name}
+                    bind:newly_created={task.newly_created}
+                />
             {/if}
         </div>
 
@@ -110,6 +113,7 @@
         overflow-wrap: break-word;
         height: fit-content;
         vertical-align: middle;
+        margin-top: -10px;
     }
 
     .children {
@@ -118,6 +122,7 @@
 
     .box {
         margin-right: 10px;
+        margin-top: -8px;
     }
 
     .add {

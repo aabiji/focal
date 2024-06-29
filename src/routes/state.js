@@ -6,11 +6,12 @@ export function get_path(name) {
 }
 
 export class Task {
-  constructor(name, is_root, parent) {
+  constructor(name, is_root, parent, newly_created) {
     this.name = name;
     this.children = [];
     this.done = false;
     this.is_root = is_root;
+    this.newly_created = newly_created;
 
     this.id = (Math.random() + 1).toString(36).substring(5);
     if (parent != null) this.parent = parent.id;
@@ -27,7 +28,7 @@ export class App {
     this.long_break_duration = 15;
     this.break_count = 0;
     this.current_session = -1;
-    this.task_tree = new Task("Your tasks", true, null);
+    this.task_tree = new Task("Your tasks", true, null, false);
   }
 
   loadFromLocalstorage(localStorage) {

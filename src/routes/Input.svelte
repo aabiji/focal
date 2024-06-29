@@ -1,21 +1,31 @@
 <script>
+    import { onMount } from "svelte";
+
+    export let newly_created;
     export let value;
     let element;
 
-    const handleInput = () => {
+    const autoresize = () => {
         const style = getComputedStyle(element);
         const padding = parseFloat(style.paddingBottom) * 3;
         element.style.height = "auto";
         element.style.height = `${element.scrollHeight - padding}px`;
     };
+
+    onMount(() => {
+        autoresize();
+        if (newly_created) {
+            newly_created = false;
+            element.focus();
+        }
+    });
 </script>
 
 <textarea
-    type="text"
     placeholder="Your Task"
     bind:value
     bind:this={element}
-    on:input={() => handleInput()}
+    on:input={() => autoresize()}
 />
 
 <style>
@@ -27,9 +37,8 @@
         width: 100%;
         font-family: sans-serif;
         line-height: normal;
-        padding: 5px;
         overflow: hidden;
+        margin-top: 12px;
         background-color: rgba(0, 0, 0, 0);
-        display: flex;
     }
 </style>
