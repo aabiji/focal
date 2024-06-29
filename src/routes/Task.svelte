@@ -7,8 +7,9 @@
 
     const toggleStatus = () => {
         task.done = !task.done;
+        let parent_state = task.done;
         for (let child of task.children) {
-            child.done = !child.done;
+            child.done = parent_state;
         }
         triggerUIRefresh();
     };
