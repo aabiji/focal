@@ -1,6 +1,7 @@
 <script>
     import { Task, app, get_path } from "./state";
     import Checkbox from "./Checkbox.svelte";
+    import Input from "./Input.svelte";
 
     export let task;
     const triggerUIRefresh = () => ($app.task_tree = { ...$app.task_tree });
@@ -59,13 +60,9 @@
 
         <div class="text">
             {#if task.is_root}
-                <h4>{task.name}</h4>
+                <p>{task.name}</p>
             {:else}
-                <input
-                    type="text"
-                    placeholder="Your Task"
-                    bind:value={task.name}
-                />
+                <Input bind:value={task.name} />
             {/if}
         </div>
 
@@ -97,7 +94,6 @@
     }
 
     .task {
-        height: 35px;
         display: flex;
         cursor: pointer;
         margin-bottom: 10px;
@@ -105,12 +101,15 @@
         border-radius: 5px;
         padding-left: 10px;
         padding-right: 10px;
+        height: fit-content;
         background-color: rgba(255, 255, 255, 0.85);
     }
 
     .text {
         width: 80%;
         overflow-wrap: break-word;
+        height: fit-content;
+        vertical-align: middle;
     }
 
     .children {
@@ -138,13 +137,6 @@
         min-width: 25%;
     }
 
-    input {
-        border: none;
-        outline: none;
-        background-color: rgba(0, 0, 0, 0);
-        font-size: 17px;
-    }
-
     button {
         border: none;
         outline: none;
@@ -157,6 +149,5 @@
     img {
         width: 22px;
         height: 22px;
-        margin-top: 8px;
     }
 </style>
