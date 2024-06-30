@@ -6,6 +6,7 @@ export const video_ids = {
   classical: "Hlp6aawXVoY",
   lofi: "jfKfPfyJRdk",
   nature: "eKFTSSKCzWA",
+  focus: "RG2IK8oRZNA",
 };
 
 export function get_path(name) {
