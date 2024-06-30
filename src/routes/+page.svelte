@@ -30,9 +30,10 @@
     };
     $: {
         if (reload_player) {
-            youtube_player.pauseVideo();
+            let already_playing = youtube_player.getPlayerState() == 1;
+            youtube_player.stopVideo();
             youtube_player.loadVideoById($app.video_id);
-            youtube_player.pauseVideo();
+            if (!already_playing) youtube_player.pauseVideo();
         }
         reload_player = false;
     }
