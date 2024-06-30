@@ -32,6 +32,7 @@
         if (reload_player) {
             youtube_player.pauseVideo();
             youtube_player.loadVideoById($app.video_id);
+            youtube_player.pauseVideo();
         }
         reload_player = false;
     }
