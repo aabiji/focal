@@ -3,11 +3,13 @@
     export let show_settings_popup;
     export let reload_player;
 
-    let before = $app.video_id;
+    let prev_state = $app.play_music;
+    let prev_id = $app.video_id;
     const close = () => {
         show_settings_popup = false;
-        reload_player = $app.video_id != before;
-        before = $app.video_id;
+        reload_player = $app.video_id != prev_id || prev_state != $app.play_music;
+        prev_id = $app.video_id;
+        prev_state = $app.play_music;
     };
 </script>
 
@@ -24,7 +26,7 @@
                     Ring on session switch
                 </label>
                 <label>
-                    <input type="checkbox" bind:checked={$app.play_ringtone} />
+                    <input type="checkbox" bind:checked={$app.show_notification} />
                     Notify on session switch
                 </label>
                 <label>

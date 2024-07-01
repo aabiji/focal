@@ -6,6 +6,7 @@
     import { app } from "./app";
     import { onMount } from "svelte";
 
+    let paused = true;
     let youtube_player;
     let player_ready = false;
     let reload_player = false;
@@ -30,10 +31,11 @@
     };
     $: {
         if (reload_player) {
-            let already_playing = youtube_player.getPlayerState() == 1;
             youtube_player.stopVideo();
-            youtube_player.loadVideoById($app.video_id);
-            if (!already_playing) youtube_player.pauseVideo();
+            if ($app.play_music) {
+                youtube_player.loadVideoById($app.video_id);
+                if (paused) youtube_player.pauseVideo();
+            }
         }
         reload_player = false;
     }
@@ -62,7 +64,7 @@
 {#if player_ready}
     <Settings bind:reload_player bind:show_settings_popup />
     <div class="left-side">
-        <Pomodoro bind:show_settings_popup bind:youtube_player />
+        <Pomodoro bind:show_settings_popup bind:youtube_player bind:paused />
     </div>
     <div class="right-side"><TaskTree /></div>
 {:else}

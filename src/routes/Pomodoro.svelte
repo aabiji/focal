@@ -3,6 +3,7 @@
 
     export let show_settings_popup;
     export let youtube_player;
+    export let paused;
 
     const toggleMusicPlayback = () => {
         if (!$app.play_music) return;
@@ -71,7 +72,6 @@
     };
     const stopTimer = () => clearInterval(interval);
 
-    let paused = true;
     let icon_src = paused ? get_path("play.svg") : get_path("pause.svg");
     const togglePlayback = () => {
         paused ? startTimer() : stopTimer();
