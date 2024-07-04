@@ -2,11 +2,10 @@ import { writable } from "svelte/store";
 import { dev } from "$app/environment";
 
 export const video_ids = {
-  jazz: "fx67Lg5oSgM",
   classical: "Hlp6aawXVoY",
   lofi: "jfKfPfyJRdk",
   nature: "eKFTSSKCzWA",
-  focus: "RG2IK8oRZNA",
+  noise: "nMfPqeZjc2c",
 };
 
 export function get_path(name) {

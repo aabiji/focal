@@ -42,8 +42,7 @@
                         <option value={video_ids.lofi}> Lofi beats </option>
                         <option value={video_ids.classical}> Classical </option>
                         <option value={video_ids.nature}> Nature </option>
-                        <option value={video_ids.jazz}> Jazz </option>
-                        <option value={video_ids.focus}> Focus </option>
+                        <option value={video_ids.noise}> Noise </option>
                     </select>
                 </label>
             {/if}
