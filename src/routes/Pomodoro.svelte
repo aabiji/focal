@@ -66,7 +66,7 @@
     let interval;
     let session = "Focus time!";
     const startTimer = () => {
-        interval = setInterval(() => tickTimer(), 10);
+        interval = setInterval(() => tickTimer(), 1000);
     };
     const stopTimer = () => clearInterval(interval);
 
