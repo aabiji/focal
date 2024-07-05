@@ -51,20 +51,23 @@
             <div class="durations">
                 <div class="duration">
                     <p>Work session</p>
-                    <input type="number" bind:value={$app.work_duration} />
+                    <input
+                        type="number"
+                        bind:value={$app.durations[0]}
+                    />
                 </div>
                 <div class="duration">
                     <p>Short break</p>
                     <input
                         type="number"
-                        bind:value={$app.short_break_duration}
+                        bind:value={$app.durations[1]}
                     />
                 </div>
                 <div class="duration">
                     <p>Long break</p>
                     <input
                         type="number"
-                        bind:value={$app.long_break_duration}
+                        bind:value={$app.durations[2]}
                     />
                 </div>
             </div>

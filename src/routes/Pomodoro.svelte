@@ -1,5 +1,6 @@
 <script>
     import { app, get_path } from "./app";
+    import { onMount } from "svelte";
 
     export let show_settings_popup;
     export let youtube_player;
@@ -20,7 +21,7 @@
             new Notification("Focal", { body, icon: "" });
         }
 
-        if ($app.play_music) {
+        if ($app.play_ringtone) {
             const audio = new Audio(get_path("tone.mp3"));
             audio.play();
         }
@@ -29,15 +30,21 @@
     let hours = 0;
     let minutes = 0;
     let seconds = 0;
-    const loadTimeValues = () => {
-        seconds = 59;
-        let duration = $app.getSessionDuration();
+    const loadTimeValues = (duration) => {
         hours = Math.floor(duration / 60);
-        let x = hours * 60 - duration - 1;
-        minutes = hours > 0 ? x : duration - 1;
+        minutes = Math.max(duration % 60, 0);
+        seconds = 0;
     };
 
-    let time = "00:00:00";
+    const formatTime = (hours, minutes, seconds) => {
+        let time = "";
+        time += hours.toString().padStart(2, "0") + ":";
+        time += minutes.toString().padStart(2, "0") + ":";
+        time += seconds.toString().padStart(2, "0");
+        return time;
+    };
+    let time = formatTime(0, 0, 0);
+
     const tickTimer = () => {
         seconds -= 1;
         if (seconds < 0) {
@@ -51,24 +58,15 @@
 
         if (hours < 0) {
             session = $app.gotoNextSession();
-            loadTimeValues();
+            loadTimeValues($app.getSessionDuration());
             signalSessionChange();
         }
-
-        time = "";
-        time += hours.toString().padStart(2, "0") + ":";
-        time += minutes.toString().padStart(2, "0") + ":";
-        time += seconds.toString().padStart(2, "0");
     };
 
     let interval;
     let session = "Focus time!";
     const startTimer = () => {
-        if ($app.current_session == -1) {
-            session = $app.gotoNextSession();
-            loadTimeValues();
-        }
-        interval = setInterval(() => tickTimer(), 1000);
+        interval = setInterval(() => tickTimer(), 10);
     };
     const stopTimer = () => clearInterval(interval);
 
@@ -79,6 +77,28 @@
         paused = !paused;
         icon_src = paused ? get_path("play.svg") : get_path("pause.svg");
     };
+
+    // Deep copy of the timer durations
+    let prev_durations = JSON.parse(JSON.stringify($app.durations));
+    onMount(() => {
+        session = $app.gotoNextSession();
+        loadTimeValues($app.getSessionDuration());
+    });
+
+    // Only change the timer when its values are changed in the settings
+    // when we're paused and the value changed is relevant to our current session
+    $: {
+        let i = $app.current_session;
+        let valid = i != -1 && paused;
+        let value_changed = prev_durations[i] != $app.durations[i];
+        if (valid && value_changed) {
+            loadTimeValues($app.getSessionDuration());
+            prev_durations = JSON.parse(JSON.stringify($app.durations));
+        }
+    }
+
+    // Update the timer when its values change
+    $: time = formatTime(hours, minutes, seconds);
 </script>
 
 <div class="container">

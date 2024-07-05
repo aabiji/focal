@@ -27,14 +27,13 @@ export class Task {
 
 export class App {
   constructor() {
+    // 0=work, 1=short break, 2=long break
+    this.current_session = -1;
+    this.durations = [25, 5, 15];
     this.play_music = true;
     this.play_ringtone = true;
     this.show_notification = true;
-    this.work_duration = 25;
-    this.short_break_duration = 5;
-    this.long_break_duration = 15;
     this.break_count = 0;
-    this.current_session = -1;
     this.video_id = video_ids.lofi;
     this.task_tree = new Task("Your tasks", true, null, false);
   }
@@ -79,9 +78,7 @@ export class App {
   }
 
   getSessionDuration() {
-    if (this.current_session == 0) return this.work_duration;
-    if (this.current_session == 1) return this.short_break_duration;
-    return this.long_break_duration;
+    return this.durations[this.current_session];
   }
 }
 
