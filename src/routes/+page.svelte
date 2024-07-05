@@ -125,6 +125,23 @@
         width: 50%;
         height: 100%;
         position: absolute;
+        overflow-y: scroll;
         background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #00000000;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 1);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.9);
     }
 </style>

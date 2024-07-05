@@ -92,7 +92,6 @@
 <style>
     .container {
         width: 100%;
-        height: fit-content;
         font-size: 17px;
     }
 
