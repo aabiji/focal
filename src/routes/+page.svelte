@@ -94,12 +94,17 @@
     }
 
     .loading-animation {
+        /* Center horizantally */
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+
         top: 45%;
-        left: 35%;
         color: white;
+        width: fit-content;
         font-weight: bold;
         font-family: "Arial Rounded";
-        font-size: 50px;
         animation: l1 1s linear infinite alternate;
         position: absolute;
     }
@@ -114,34 +119,72 @@
         }
     }
 
-    .left-side {
-        position: absolute;
-        width: 50%;
-        height: 100%;
-    }
-
     .right-side {
-        left: 50%;
-        width: 50%;
         height: 100%;
-        position: absolute;
-        overflow-y: scroll;
+        overflow-y: auto;
         background-color: rgba(255, 255, 255, 0.1);
     }
 
-    ::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
+    .right-side::-webkit-scrollbar-track {
         background: #00000000;
     }
 
-    ::-webkit-scrollbar-thumb {
+    .right-side::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 1);
     }
 
-    ::-webkit-scrollbar-thumb:hover {
+    .right-side::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 255, 255, 0.9);
+    }
+
+    /*
+       The timer is on the top, and the task tree is on the bottom
+      in a mobile view
+     */
+    @media only screen and (max-width: 550px) {
+        :global(body) {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .right-side {
+            width: 100%;
+            margin-top: 25px;
+        }
+
+        .loading-animation {
+            font-size: 30px;
+        }
+
+        .right-side::-webkit-scrollbar {
+            width: 5px;
+        }
+    }
+
+    /* The timer is on the left, and the task tree is on the right
+       in a desktop view
+    */
+    @media only screen and (min-width: 550px) {
+        .left-side {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+        }
+
+        .right-side {
+            left: 50%;
+            width: 50%;
+            position: absolute;
+        }
+
+        .loading-animation {
+            font-size: 40px;
+        }
+
+        .right-side::-webkit-scrollbar {
+            width: 8px;
+        }
     }
 </style>

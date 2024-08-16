@@ -76,14 +76,38 @@
 {/if}
 
 <style>
-    dialog {
-        top: 50%;
-        border: none;
-        width: 30%;
-        height: fit-content;
-        margin: 0 auto;
-        border-radius: 10px;
-        transform: translateY(-80%);
+    @media only screen and (max-width: 550px) {
+        dialog {
+            top: 50%;
+            border: none;
+            width: 80%;
+            height: fit-content;
+            margin: 0 auto;
+                    border-radius: 10px;
+            transform: translateY(-80%);
+        }
+
+        .close img {
+            width: 15px;
+            height: 15px;
+        }
+    }
+
+    @media only screen and (min-width: 550px) {
+        dialog {
+            top: 50%;
+            border: none;
+            width: 30%;
+            height: fit-content;
+            margin: 0 auto;
+                    border-radius: 10px;
+            transform: translateY(-80%);
+        }
+
+        .close img {
+            width: 25px;
+            height: 25px;
+        }
     }
 
     .backdrop {
@@ -102,11 +126,6 @@
         cursor: pointer;
         float: right;
         background-color: rgba(0, 0, 0, 0);
-    }
-
-    .close img {
-        width: 25px;
-        height: 25px;
     }
 
     .durations {
