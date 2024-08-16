@@ -1,9 +1,11 @@
 <script>
-    import { Task, app, get_path } from "./app";
+    import { getPath } from "./utils";
+    import { Task, app } from "./app";
     import Checkbox from "./Checkbox.svelte";
     import Input from "./Input.svelte";
 
     export let task;
+    // Refresh when the task tree changes
     const triggerUIRefresh = () => ($app.task_tree = { ...$app.task_tree });
 
     const toggleStatus = () => {
@@ -72,11 +74,11 @@
         <div class="controls">
             &nbsp; <!--So that the div has a width with no elements -->
             <button class="add" on:click={() => addSubTask()}>
-                <img src={get_path("plus.svg")} alt="Add icon" />
+                <img src={getPath("plus.svg")} alt="Add icon" />
             </button>
             {#if !task.is_root}
                 <button class="remove" on:click={() => removeTask()}>
-                    <img src={get_path("trash.svg")} alt="Trash icon" />
+                    <img src={getPath("trash.svg")} alt="Trash icon" />
                 </button>
             {/if}
         </div>

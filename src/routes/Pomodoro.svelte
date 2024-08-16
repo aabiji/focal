@@ -1,19 +1,26 @@
 <script>
-    import { app, get_path } from "./app";
+    import * as utils from "./utils";
+    import { app } from "./app";
     import { onMount } from "svelte";
 
     export let show_settings_popup;
-    export let youtube_player;
-    export let paused;
 
-    const toggleMusicPlayback = () => {
-        if (!$app.play_music) return;
-        if (youtube_player.getPlayerState() == 1) {
-            youtube_player.pauseVideo();
-        } else {
-            youtube_player.playVideo();
-        }
-    };
+    let session = "Focus time!";
+    let time = utils.formatTime(0, 0, 0);
+    let hours = 0;
+    let minutes = 0;
+    let seconds = 0;
+
+    // Deep copy of the timer durations
+    let prev_durations = JSON.parse(JSON.stringify($app.durations));
+    let timer; // Returned from setInterval
+    let icon = $app.getPlaybackIcon();
+
+    onMount(() => {
+        session = $app.gotoNextSession();
+        let duration = $app.getSessionDuration();
+        [hours, minutes, seconds] = utils.getTimeValues(duration);
+    });
 
     const signalSessionChange = () => {
         if ($app.show_notification) {
@@ -22,28 +29,10 @@
         }
 
         if ($app.play_ringtone) {
-            const audio = new Audio(get_path("tone.mp3"));
+            const audio = new Audio(getPath("tone.mp3"));
             audio.play();
         }
     };
-
-    let hours = 0;
-    let minutes = 0;
-    let seconds = 0;
-    const loadTimeValues = (duration) => {
-        hours = Math.floor(duration / 60);
-        minutes = Math.max(duration % 60, 0);
-        seconds = 0;
-    };
-
-    const formatTime = (hours, minutes, seconds) => {
-        let time = "";
-        time += hours.toString().padStart(2, "0") + ":";
-        time += minutes.toString().padStart(2, "0") + ":";
-        time += seconds.toString().padStart(2, "0");
-        return time;
-    };
-    let time = formatTime(0, 0, 0);
 
     const tickTimer = () => {
         seconds -= 1;
@@ -58,58 +47,48 @@
 
         if (hours < 0) {
             session = $app.gotoNextSession();
-            loadTimeValues($app.getSessionDuration());
+            let duration = $app.getSessionDuration();
+            [hours, minutes, seconds] = utils.getTimeValues(duration);
             signalSessionChange();
         }
     };
 
-    let interval;
-    let session = "Focus time!";
-    const startTimer = () => {
-        interval = setInterval(() => tickTimer(), 1000);
+    const toggleTimer = () => {
+        $app.music.togglePlayback();
+        if ($app.music.paused) {
+            clearInterval(timer);
+        } else {
+            timer = setInterval(() => tickTimer(), 1000);
+        }
+        icon = $app.getPlaybackIcon();
     };
-    const stopTimer = () => clearInterval(interval);
-
-    let icon_src = paused ? get_path("play.svg") : get_path("pause.svg");
-    const togglePlayback = () => {
-        paused ? startTimer() : stopTimer();
-        toggleMusicPlayback();
-        paused = !paused;
-        icon_src = paused ? get_path("play.svg") : get_path("pause.svg");
-    };
-
-    // Deep copy of the timer durations
-    let prev_durations = JSON.parse(JSON.stringify($app.durations));
-    onMount(() => {
-        session = $app.gotoNextSession();
-        loadTimeValues($app.getSessionDuration());
-    });
 
     // Only change the timer when its values are changed in the settings
     // when we're paused and the value changed is relevant to our current session
     $: {
         let i = $app.current_session;
-        let valid = i != -1 && paused;
+        let valid = i != -1 && $app.music.paused;
         let value_changed = prev_durations[i] != $app.durations[i];
         if (valid && value_changed) {
-            loadTimeValues($app.getSessionDuration());
+            let duration = $app.getSessionDuration();
+            [hours, minutes, seconds] = utils.getTimeValues(duration);
             prev_durations = JSON.parse(JSON.stringify($app.durations));
         }
     }
 
     // Update the timer when its values change
-    $: time = formatTime(hours, minutes, seconds);
+    $: time = utils.formatTime(hours, minutes, seconds);
 </script>
 
 <div class="container">
     <p>{session}</p>
     <h1>{time}</h1>
     <div class="controls">
-        <button on:click={() => togglePlayback()}>
-            <img src={icon_src} alt="play icon" />
+        <button on:click={() => toggleTimer()}>
+            <img src={icon} alt="play icon" />
         </button>
         <button on:click={() => (show_settings_popup = true)}>
-            <img src={get_path("settings.svg")} alt="settings icon" />
+            <img src={utils.getPath("settings.svg")} alt="settings icon" />
         </button>
     </div>
 </div>

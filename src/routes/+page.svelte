@@ -6,43 +6,13 @@
     import { app } from "./app";
     import { onMount } from "svelte";
 
-    let paused = true;
-    let youtube_player;
-    let player_ready = false;
-    let reload_player = false;
-    const player_id = "youtube-player";
-    const on_video_ready = () => (player_ready = true);
-    const load_video = () => {
-        player_ready = false;
-        youtube_player = new YT.Player(player_id, {
-            height: "0",
-            width: "0",
-            videoId: $app.video_id,
-            playerVars: { autoplay: 0, loop: 1 },
-            events: { onReady: on_video_ready },
-        });
-    };
-    const load_player = () => {
-        if (window.YT) {
-            load_video();
-        } else {
-            window.onYouTubeIframeAPIReady = load_video;
-        }
-    };
-    $: {
-        if (reload_player) {
-            youtube_player.stopVideo();
-            if ($app.play_music) {
-                youtube_player.loadVideoById($app.video_id);
-                if (paused) youtube_player.pauseVideo();
-            }
-        }
-        reload_player = false;
-    }
-
     let show_settings_popup = false;
+    let player_ready = false;
+    const player_id = "youtube-player";
+
     onMount(() => {
         $app.loadFromLocalstorage(window.localStorage);
+
         // Save in localstorage on reload or close
         window.addEventListener("beforeunload", () => {
             localStorage.setItem("data", JSON.stringify($app));
@@ -53,6 +23,37 @@
             Notification.requestPermission();
         }
     });
+
+    const on_video_ready = () => (player_ready = true);
+    const load_video = () => {
+        player_ready = false;
+        $app.music.youtube_player = new YT.Player(player_id, {
+            height: "0",
+            width: "0",
+            videoId: $app.music.genre,
+            playerVars: { autoplay: 0, loop: 1 },
+            events: { onReady: on_video_ready },
+        });
+    };
+
+    const load_player = () => {
+        if (window.YT) {
+            load_video();
+        } else {
+            window.onYouTubeIframeAPIReady = load_video;
+        }
+    };
+
+    // Reload music playback
+    $: {
+        if ($app.music.reload) {
+            $app.music.stop();
+            if ($app.play_music) {
+                $app.music.load();
+            }
+        }
+        $app.music.reload = false;
+    }
 </script>
 
 <!---Embedded youtube player-->
@@ -61,10 +62,11 @@
 </svelte:head>
 <div id={player_id} class="yt-player"></div>
 
+<!---UI-->
 {#if player_ready}
-    <Settings bind:reload_player bind:show_settings_popup />
+    <Settings bind:show_settings_popup />
     <div class="left-side">
-        <Pomodoro bind:show_settings_popup bind:youtube_player bind:paused />
+        <Pomodoro bind:show_settings_popup />
     </div>
     <div class="right-side"><TaskTree /></div>
 {:else}

@@ -1,14 +1,17 @@
 <script>
-    import { app, get_path, video_ids } from "./app";
-    export let show_settings_popup;
-    export let reload_player;
+    import { getPath } from "./utils";
+    import { app, music_genres } from "./app";
 
+    export let show_settings_popup;
     let prev_state = $app.play_music;
-    let prev_id = $app.video_id;
+    let prev_genre = $app.music.genre;
+
     const close = () => {
         show_settings_popup = false;
-        reload_player = $app.video_id != prev_id || prev_state != $app.play_music;
-        prev_id = $app.video_id;
+        // Reload the music if we change our music settings
+        $app.music.reload =
+            $app.music.genre != prev_genre || prev_state != $app.play_music;
+        prev_genre = $app.music.genre;
         prev_state = $app.play_music;
     };
 </script>
@@ -17,7 +20,7 @@
     <div class="backdrop">
         <dialog open>
             <button class="close" on:click={() => close()}>
-                <img src={get_path("close.svg")} alt="Close icon" />
+                <img src={getPath("close.svg")} alt="Close icon" />
             </button>
 
             <div>
@@ -26,7 +29,10 @@
                     Ring on session switch
                 </label>
                 <label>
-                    <input type="checkbox" bind:checked={$app.show_notification} />
+                    <input
+                        type="checkbox"
+                        bind:checked={$app.show_notification}
+                    />
                     Notify on session switch
                 </label>
                 <label>
@@ -38,11 +44,13 @@
             {#if $app.play_music}
                 <label>
                     Music choice:
-                    <select bind:value={$app.video_id}>
-                        <option value={video_ids.lofi}> Lofi beats </option>
-                        <option value={video_ids.classical}> Classical </option>
-                        <option value={video_ids.nature}> Nature </option>
-                        <option value={video_ids.noise}> Noise </option>
+                    <select bind:value={$app.music.genre}>
+                        <option value={music_genres.lofi}> Lofi beats </option>
+                        <option value={music_genres.classical}>
+                            Classical
+                        </option>
+                        <option value={music_genres.nature}> Nature </option>
+                        <option value={music_genres.noise}> Noise </option>
                     </select>
                 </label>
             {/if}
@@ -51,24 +59,15 @@
             <div class="durations">
                 <div class="duration">
                     <p>Work session</p>
-                    <input
-                        type="number"
-                        bind:value={$app.durations[0]}
-                    />
+                    <input type="number" bind:value={$app.durations[0]} />
                 </div>
                 <div class="duration">
                     <p>Short break</p>
-                    <input
-                        type="number"
-                        bind:value={$app.durations[1]}
-                    />
+                    <input type="number" bind:value={$app.durations[1]} />
                 </div>
                 <div class="duration">
                     <p>Long break</p>
-                    <input
-                        type="number"
-                        bind:value={$app.durations[2]}
-                    />
+                    <input type="number" bind:value={$app.durations[2]} />
                 </div>
             </div>
         </dialog>
@@ -83,7 +82,7 @@
             width: 80%;
             height: fit-content;
             margin: 0 auto;
-                    border-radius: 10px;
+            border-radius: 10px;
             transform: translateY(-80%);
         }
 
@@ -100,7 +99,7 @@
             width: 30%;
             height: fit-content;
             margin: 0 auto;
-                    border-radius: 10px;
+            border-radius: 10px;
             transform: translateY(-80%);
         }
 
