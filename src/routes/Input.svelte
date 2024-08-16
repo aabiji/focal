@@ -23,6 +23,8 @@
 
 <textarea
     placeholder="Your Task"
+    spellcheck="false"
+    autocorrect
     bind:value
     bind:this={element}
     on:input={() => autoresize()}

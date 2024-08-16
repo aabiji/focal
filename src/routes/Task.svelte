@@ -106,7 +106,7 @@
         padding-left: 10px;
         padding-right: 10px;
         height: fit-content;
-        background-color: rgba(255, 255, 255, 0.85);
+        background-color: #fff;
     }
 
     .text {

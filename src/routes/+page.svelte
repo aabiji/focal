@@ -79,6 +79,11 @@
         src: url("/ArialRounded.ttf");
     }
 
+    :global(html) {
+        width: 100%;
+        height: 100%;
+    }
+
     :global(body) {
         width: 100%;
         height: 100%;
@@ -86,9 +91,10 @@
         margin: 0px;
         overflow: hidden;
         font-family: Arial, Helvetica, sans-serif;
-        background: linear-gradient(to right, #67b26f, #4ca2cd);
+        background-image: url("https://images.pexels.com/photos/7864126/pexels-photo-7864126.jpeg?auto=compress");
+        background-size: cover;
         background-repeat: no-repeat;
-        background-attachment: fixed;
+        background-position: center;
     }
 
     .yt-player {
