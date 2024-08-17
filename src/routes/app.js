@@ -3,7 +3,7 @@ import { getPath } from "./utils";
 
 // Mapping of music genres to YouTube video IDs
 // Each genre is associated with a specific video ID for playback
-export const music_genres = {
+export const musicGenres = {
     classical: "Hlp6aawXVoY",
     lofi: "jfKfPfyJRdk",
     nature: "eKFTSSKCzWA",
@@ -12,40 +12,40 @@ export const music_genres = {
 
 export class Music {
     constructor() {
-        this.genre = music_genres.lofi;
-        this.youtube_player = undefined;
+        this.genre = musicGenres.lofi;
+        this.youtubePlayer = undefined;
         this.paused = true;
         this.reload = false;
     }
 
     togglePlayback() {
         this.paused = !this.paused;
-        if (this.youtube_player.getPlayerState() == 1) {
-            this.youtube_player.pauseVideo();
+        if (this.youtubePlayer.getPlayerState() == 1) {
+            this.youtubePlayer.pauseVideo();
         } else {
-            this.youtube_player.playVideo();
+            this.youtubePlayer.playVideo();
         }
     }
 
     stop() {
-        this.youtube_player.stopVideo();
+        this.youtubePlayer.stopVideo();
     }
 
     load() {
-        this.youtube_player.loadVideoById(this.genre);
+        this.youtubePlayer.loadVideoById(this.genre);
         if (this.paused) {
-            this.youtube_player.pauseVideo();
+            this.youtubePlayer.pauseVideo();
         }
     }
 }
 
 export class Task {
-    constructor(name, is_root, parent, newly_created) {
+    constructor(name, isRoot, parent, newlyCreated) {
         this.name = name;
         this.children = [];
         this.done = false;
-        this.is_root = is_root;
-        this.newly_created = newly_created;
+        this.isRoot = isRoot;
+        this.newlyCreated = newlyCreated;
 
         this.id = (Math.random() + 1).toString(36).substring(5);
         if (parent != null) this.parent = parent.id;
@@ -55,15 +55,15 @@ export class Task {
 export class App {
     constructor() {
         // 0=work, 1=short break, 2=long break
-        this.current_session = -1;
-        this.break_count = 0;
+        this.currentSession = -1;
+        this.breakCount = 0;
         this.durations = [25, 5, 15];
 
-        this.play_music = true;
-        this.play_ringtone = true;
-        this.show_notification = true;
+        this.playMusic = true;
+        this.playRingtone = true;
+        this.showNotification = true;
 
-        this.task_tree = new Task("Your tasks", true, null, false);
+        this.taskTree = new Task("Your tasks", true, null, false);
         this.music = new Music();
     }
 
@@ -74,46 +74,46 @@ export class App {
         const obj = JSON.parse(cached_data);
         Object.assign(this, obj);
 
-        this.break_count = 0;
-        this.current_session = -1;
+        this.breakCount = 0;
+        this.currentSession = -1;
 
         let temp = new Music();
-        temp.genre = this.music.genre == undefined ? music_genres.lofi : this.music.genre;
+        temp.genre = this.music.genre == undefined ? musicGenres.lofi : this.music.genre;
         this.music = temp;
     }
 
     gotoNextSession() {
         // Move to the next possible state (session)
-        this.current_session = (this.current_session + 1) % 3;
+        this.currentSession = (this.currentSession + 1) % 3;
 
-        if (this.current_session == 0) {
+        if (this.currentSession == 0) {
             return "Work";
         }
 
-        if (this.current_session == 1) {
-            this.break_count += 1;
+        if (this.currentSession == 1) {
+            this.breakCount += 1;
             return "Short Break";
         }
 
         // Only enter the long break session after
         // we've entered the short break session 4 times
-        if (break_count < 4) {
-            this.current_session = 0;
+        if (breakCount < 4) {
+            this.currentSession = 0;
             return "Work";
         }
 
-        this.break_count = 0;
+        this.breakCount = 0;
         return "Long Break";
     }
 
     getSessionMessage() {
-        if (this.current_session == 0) return "Back to work!";
-        if (this.current_session == 1) return "Take a short break";
+        if (this.currentSession == 0) return "Back to work!";
+        if (this.currentSession == 1) return "Take a short break";
         return "Take a long break";
     }
 
     getSessionDuration() {
-        return this.durations[this.current_session];
+        return this.durations[this.currentSession];
     }
 
     getPlaybackIcon() {

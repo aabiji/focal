@@ -6,9 +6,9 @@
     import { app } from "./app";
     import { onMount } from "svelte";
 
-    let show_settings_popup = false;
-    let player_ready = false;
-    const player_id = "youtube-player";
+    let showSettingsPopup = false;
+    let playerReady = false;
+    const playerId = "youtube-player";
 
     onMount(() => {
         $app.loadFromLocalstorage(window.localStorage);
@@ -19,15 +19,15 @@
         });
 
         load_player();
-        if ($app.show_notification) {
+        if ($app.showNotification) {
             Notification.requestPermission();
         }
     });
 
-    const on_video_ready = () => (player_ready = true);
+    const on_video_ready = () => (playerReady = true);
     const load_video = () => {
-        player_ready = false;
-        $app.music.youtube_player = new YT.Player(player_id, {
+        playerReady = false;
+        $app.music.youtubePlayer = new YT.Player(playerId, {
             height: "0",
             width: "0",
             videoId: $app.music.genre,
@@ -48,7 +48,7 @@
     $: {
         if ($app.music.reload) {
             $app.music.stop();
-            if ($app.play_music) {
+            if ($app.playMusic) {
                 $app.music.load();
             }
         }
@@ -60,13 +60,13 @@
 <svelte:head>
     <script src="https://www.youtube.com/iframe_api"></script>
 </svelte:head>
-<div id={player_id} class="yt-player"></div>
+<div id={playerId} class="yt-player"></div>
 
 <!---UI-->
-{#if player_ready}
-    <Settings bind:show_settings_popup />
+{#if playerReady}
+    <Settings bind:showSettingsPopup />
     <div class="left-side">
-        <Pomodoro bind:show_settings_popup />
+        <Pomodoro bind:showSettingsPopup />
     </div>
     <div class="right-side"><TaskTree /></div>
 {:else}

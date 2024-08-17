@@ -4,14 +4,14 @@
 </script>
 
 <div class="container">
-    <!--The task_tree is an object. Since objects in
+    <!--The taskTree is an object. Since objects in
         javascript are referenced, if we assign a field
         in the object to another variable and change that
         variable, the underlying object is changed also.
-        We can leverage this and bind the task_tree store to
+        We can leverage this and bind the taskTree store to
         our children, so that we (the parent) update when the
         children indirectly change the task tree-->
-    <Task bind:task={$app.task_tree} />
+    <Task bind:task={$app.taskTree} />
 </div>
 
 <style>

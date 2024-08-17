@@ -6,7 +6,7 @@
 
     export let task;
     // Refresh when the task tree changes
-    const triggerUIRefresh = () => ($app.task_tree = { ...$app.task_tree });
+    const triggerUIRefresh = () => ($app.taskTree = { ...$app.taskTree });
 
     const toggleStatus = () => {
         task.done = !task.done;
@@ -61,12 +61,12 @@
         </div>
 
         <div class="text">
-            {#if task.is_root}
+            {#if task.isRoot}
                 <p>{task.name}</p>
             {:else}
                 <Input
                     bind:value={task.name}
-                    bind:newly_created={task.newly_created}
+                    bind:newlyCreated={task.newlyCreated}
                 />
             {/if}
         </div>
@@ -76,7 +76,7 @@
             <button class="add" on:click={() => addSubTask()}>
                 <img src={getPath("plus.svg")} alt="Add icon" />
             </button>
-            {#if !task.is_root}
+            {#if !task.isRoot}
                 <button class="remove" on:click={() => removeTask()}>
                     <img src={getPath("trash.svg")} alt="Trash icon" />
                 </button>
@@ -99,7 +99,6 @@
 
     .task {
         display: flex;
-        cursor: pointer;
         margin-bottom: 10px;
         align-items: center;
         border-radius: 5px;
@@ -117,8 +116,16 @@
         margin-top: -10px;
     }
 
-    .children {
-        margin-left: 25px;
+    @media only screen and (max-width: 550px) {
+        .children {
+            margin-left: 18px;
+        }
+    }
+
+    @media only screen and (min-width: 550px) {
+        .children {
+            margin-left: 25px;
+        }
     }
 
     .box {

@@ -3,7 +3,7 @@
     import { app } from "./app";
     import { onMount } from "svelte";
 
-    export let show_settings_popup;
+    export let showSettingsPopup;
 
     let session = "Focus time!";
     let time = utils.formatTime(0, 0, 0);
@@ -23,12 +23,12 @@
     });
 
     const signalSessionChange = () => {
-        if ($app.show_notification) {
+        if ($app.showNotification) {
             const body = $app.getSessionMessage();
             new Notification("Focal", { body, icon: "" });
         }
 
-        if ($app.play_ringtone) {
+        if ($app.playRingtone) {
             const audio = new Audio(getPath("tone.mp3"));
             audio.play();
         }
@@ -66,7 +66,7 @@
     // Only change the timer when its values are changed in the settings
     // when we're paused and the value changed is relevant to our current session
     $: {
-        let i = $app.current_session;
+        let i = $app.currentSession;
         let valid = i != -1 && $app.music.paused;
         let value_changed = prev_durations[i] != $app.durations[i];
         if (valid && value_changed) {
@@ -87,7 +87,7 @@
         <button on:click={() => toggleTimer()}>
             <img src={icon} alt="play icon" />
         </button>
-        <button on:click={() => (show_settings_popup = true)}>
+        <button on:click={() => (showSettingsPopup = true)}>
             <img src={utils.getPath("settings.svg")} alt="settings icon" />
         </button>
     </div>

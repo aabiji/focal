@@ -1,18 +1,18 @@
 <script>
     import { getPath } from "./utils";
-    import { app, music_genres } from "./app";
+    import { app, musicGenres } from "./app";
 
     export let show_settings_popup;
-    let prev_state = $app.play_music;
+    let prev_state = $app.playMusic;
     let prev_genre = $app.music.genre;
 
     const close = () => {
         show_settings_popup = false;
         // Reload the music if we change our music settings
         $app.music.reload =
-            $app.music.genre != prev_genre || prev_state != $app.play_music;
+            $app.music.genre != prev_genre || prev_state != $app.playMusic;
         prev_genre = $app.music.genre;
-        prev_state = $app.play_music;
+        prev_state = $app.playMusic;
     };
 </script>
 
@@ -25,32 +25,32 @@
 
             <div>
                 <label>
-                    <input type="checkbox" bind:checked={$app.play_ringtone} />
+                    <input type="checkbox" bind:checked={$app.playRingtone} />
                     Ring on session switch
                 </label>
                 <label>
                     <input
                         type="checkbox"
-                        bind:checked={$app.show_notification}
+                        bind:checked={$app.showNotification}
                     />
                     Notify on session switch
                 </label>
                 <label>
-                    <input type="checkbox" bind:checked={$app.play_music} />
+                    <input type="checkbox" bind:checked={$app.playMusic} />
                     Play background music
                 </label>
             </div>
 
-            {#if $app.play_music}
+            {#if $app.playMusic}
                 <label>
                     Music choice:
                     <select bind:value={$app.music.genre}>
-                        <option value={music_genres.lofi}> Lofi beats </option>
-                        <option value={music_genres.classical}>
+                        <option value={musicGenres.lofi}> Lofi beats </option>
+                        <option value={musicGenres.classical}>
                             Classical
                         </option>
-                        <option value={music_genres.nature}> Nature </option>
-                        <option value={music_genres.noise}> Noise </option>
+                        <option value={musicGenres.nature}> Nature </option>
+                        <option value={musicGenres.noise}> Noise </option>
                     </select>
                 </label>
             {/if}

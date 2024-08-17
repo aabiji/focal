@@ -1,7 +1,7 @@
 <script>
     import { onMount } from "svelte";
 
-    export let newly_created;
+    export let newlyCreated;
     export let value;
     let element;
 
@@ -14,8 +14,8 @@
 
     onMount(() => {
         autoresize();
-        if (newly_created) {
-            newly_created = false;
+        if (newlyCreated) {
+            newlyCreated = false;
             element.focus();
         }
     });
