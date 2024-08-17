@@ -18,29 +18,29 @@
             localStorage.setItem("data", JSON.stringify($app));
         });
 
-        load_player();
+        loadPlayer();
         if ($app.showNotification) {
             Notification.requestPermission();
         }
     });
 
-    const on_video_ready = () => (playerReady = true);
-    const load_video = () => {
+    const onVideoReady = () => (playerReady = true);
+    const loadVideo = () => {
         playerReady = false;
         $app.music.youtubePlayer = new YT.Player(playerId, {
             height: "0",
             width: "0",
             videoId: $app.music.genre,
             playerVars: { autoplay: 0, loop: 1 },
-            events: { onReady: on_video_ready },
+            events: { onReady: onVideoReady },
         });
     };
 
-    const load_player = () => {
+    const loadPlayer = () => {
         if (window.YT) {
-            load_video();
+            loadVideo();
         } else {
-            window.onYouTubeIframeAPIReady = load_video;
+            window.onYouTubeIframeAPIReady = loadVideo;
         }
     };
 

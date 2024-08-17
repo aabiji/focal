@@ -12,7 +12,7 @@
     let seconds = 0;
 
     // Deep copy of the timer durations
-    let prev_durations = JSON.parse(JSON.stringify($app.durations));
+    let prevDurations = JSON.parse(JSON.stringify($app.durations));
     let timer; // Returned from setInterval
     let icon = $app.getPlaybackIcon();
 
@@ -68,11 +68,11 @@
     $: {
         let i = $app.currentSession;
         let valid = i != -1 && $app.music.paused;
-        let value_changed = prev_durations[i] != $app.durations[i];
-        if (valid && value_changed) {
+        let valueChanged = prevDurations[i] != $app.durations[i];
+        if (valid && valueChanged) {
             let duration = $app.getSessionDuration();
             [hours, minutes, seconds] = utils.getTimeValues(duration);
-            prev_durations = JSON.parse(JSON.stringify($app.durations));
+            prevDurations = JSON.parse(JSON.stringify($app.durations));
         }
     }
 

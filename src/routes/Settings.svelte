@@ -3,16 +3,16 @@
     import { app, musicGenres } from "./app";
 
     export let showSettingsPopup;
-    let prev_state = $app.playMusic;
-    let prev_genre = $app.music.genre;
+    let prevState = $app.playMusic;
+    let prevGenre = $app.music.genre;
 
     const close = () => {
         showSettingsPopup = false;
         // Reload the music if we change our music settings
         $app.music.reload =
-            $app.music.genre != prev_genre || prev_state != $app.playMusic;
-        prev_genre = $app.music.genre;
-        prev_state = $app.playMusic;
+            $app.music.genre != prevGenre || prevState != $app.playMusic;
+        prevGenre = $app.music.genre;
+        prevState = $app.playMusic;
     };
 </script>
 

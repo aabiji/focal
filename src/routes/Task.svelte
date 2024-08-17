@@ -10,9 +10,9 @@
 
     const toggleStatus = () => {
         task.done = !task.done;
-        let parent_state = task.done;
+        let parentState = task.done;
         for (let child of task.children) {
-            child.done = parent_state;
+            child.done = parentState;
         }
         triggerUIRefresh();
     };
@@ -38,8 +38,7 @@
         }
     };
 
-    const removeTask = () =>
-        removeFromParent($app.task_tree, task.parent, task);
+    const removeTask = () => removeFromParent($app.taskTree, task.parent, task);
 
     const toggleKeyboardHandler = (event) => {
         if (event.key == "Enter" || event.key == " ") {
@@ -85,8 +84,8 @@
     </div>
 
     <div class="children">
-        {#each task.children as child_task}
-            <svelte:self bind:task={child_task} />
+        {#each task.children as childTask}
+            <svelte:self bind:task={childTask} />
         {/each}
     </div>
 </div>

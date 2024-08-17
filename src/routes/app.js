@@ -69,9 +69,9 @@ export class App {
 
     loadFromLocalstorage(localStorage) {
         // Copy values from the cached data into our class
-        const cached_data = localStorage.getItem("data");
-        if (cached_data === null) return;
-        const obj = JSON.parse(cached_data);
+        const cachedData = localStorage.getItem("data");
+        if (cachedData === null) return;
+        const obj = JSON.parse(cachedData);
         Object.assign(this, obj);
 
         this.breakCount = 0;
