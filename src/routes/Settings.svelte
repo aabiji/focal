@@ -2,12 +2,12 @@
     import { getPath } from "./utils";
     import { app, musicGenres } from "./app";
 
-    export let show_settings_popup;
+    export let showSettingsPopup;
     let prev_state = $app.playMusic;
     let prev_genre = $app.music.genre;
 
     const close = () => {
-        show_settings_popup = false;
+        showSettingsPopup = false;
         // Reload the music if we change our music settings
         $app.music.reload =
             $app.music.genre != prev_genre || prev_state != $app.playMusic;
@@ -16,7 +16,7 @@
     };
 </script>
 
-{#if show_settings_popup}
+{#if showSettingsPopup}
     <div class="backdrop">
         <dialog open>
             <button class="close" on:click={() => close()}>
