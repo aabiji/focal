@@ -65,6 +65,8 @@ export class App {
 
         this.taskTree = new Task("Your tasks", true, null, false);
         this.music = new Music();
+
+        this.paused = undefined;
     }
 
     loadFromLocalstorage(localStorage) {
@@ -80,6 +82,7 @@ export class App {
         let temp = new Music();
         temp.genre = this.music.genre == undefined ? musicGenres.lofi : this.music.genre;
         this.music = temp;
+        this.paused = undefined;
     }
 
     gotoNextSession() {
@@ -117,7 +120,9 @@ export class App {
     }
 
     getPlaybackIcon() {
-        return this.music.paused ? getPath("play.svg") : getPath("pause.svg");
+        if (this.paused == undefined)
+            return getPath("play.svg");
+        return this.paused ? getPath("pause.svg") : getPath("play.svg");
     }
 }
 

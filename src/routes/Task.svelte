@@ -133,7 +133,7 @@
     }
 
     .add {
-        color: white;
+        color: purple;
         margin-left: 10px;
         float: right;
     }
@@ -141,7 +141,7 @@
     .remove {
         float: right;
         width: 30px;
-        color: white;
+        color: purple;
     }
 
     .controls {

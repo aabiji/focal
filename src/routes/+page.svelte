@@ -91,10 +91,6 @@
         margin: 0px;
         overflow: hidden;
         font-family: Arial, Helvetica, sans-serif;
-        background-image: url("https://images.pexels.com/photos/7864126/pexels-photo-7864126.jpeg?auto=compress");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
     }
 
     .yt-player {
@@ -109,7 +105,7 @@
         margin-right: auto;
 
         top: 45%;
-        color: white;
+        color: purple;
         width: fit-content;
         font-weight: bold;
         font-family: "Arial Rounded";
@@ -130,19 +126,19 @@
     .right-side {
         height: 100%;
         overflow-y: auto;
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: #f4f4f6;
     }
 
     .right-side::-webkit-scrollbar-track {
-        background: #00000000;
+        background: #81819c;
     }
 
     .right-side::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 1);
+        background: #2e2e38;
     }
 
     .right-side::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.9);
+        background: #2e2e3880;
     }
 
     /*

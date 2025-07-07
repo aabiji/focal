@@ -54,12 +54,14 @@
     };
 
     const toggleTimer = () => {
-        $app.music.togglePlayback();
-        if ($app.music.paused) {
+        if ($app.playMusic)
+            $app.music.togglePlayback();
+        if ($app.paused) {
             clearInterval(timer);
         } else {
             timer = setInterval(() => tickTimer(), 1000);
         }
+        $app.paused = $app.paused === undefined ? true : !$app.paused;
         icon = $app.getPlaybackIcon();
     };
 
@@ -105,7 +107,7 @@
 
     h1 {
         font-size: 50px;
-        color: white;
+        color: purple;
         font-family: "Arial Rounded";
         font-weight: bold;
     }
@@ -113,7 +115,7 @@
     p {
         margin-bottom: -20px;
         font-size: 20px;
-        color: white;
+        color: purple;
         font-weight: bold;
     }
 
