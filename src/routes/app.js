@@ -1,129 +1,64 @@
-import { writable } from "svelte/store";
-import { getPath } from "./utils";
+import { writable, get } from "svelte/store";
+import { dev } from "$app/environment";
 
-// Mapping of music genres to YouTube video IDs
-// Each genre is associated with a specific video ID for playback
-export const musicGenres = {
-    classical: "Hlp6aawXVoY",
-    lofi: "jfKfPfyJRdk",
-    nature: "eKFTSSKCzWA",
-    noise: "nMfPqeZjc2c",
-};
-
-export class Music {
-    constructor() {
-        this.genre = musicGenres.lofi;
-        this.youtubePlayer = undefined;
-        this.paused = true;
-        this.reload = false;
-    }
-
-    togglePlayback() {
-        this.paused = !this.paused;
-        if (this.youtubePlayer.getPlayerState() == 1) {
-            this.youtubePlayer.pauseVideo();
-        } else {
-            this.youtubePlayer.playVideo();
-        }
-    }
-
-    stop() {
-        this.youtubePlayer.stopVideo();
-    }
-
-    load() {
-        this.youtubePlayer.loadVideoById(this.genre);
-        if (this.paused) {
-            this.youtubePlayer.pauseVideo();
-        }
-    }
-}
+// The asset paths in dev are different than those in production
+export const getPath = (name) => dev ? `/${name}` : name;
 
 export class Task {
-    constructor(name, isRoot, parent, newlyCreated) {
-        this.name = name;
-        this.children = [];
-        this.done = false;
-        this.isRoot = isRoot;
-        this.newlyCreated = newlyCreated;
+  constructor(name, isRoot, parent, newlyCreated) {
+    this.name = name;
+    this.children = [];
+    this.done = false;
+    this.isRoot = isRoot;
+    this.newlyCreated = newlyCreated;
 
-        this.id = (Math.random() + 1).toString(36).substring(5);
-        if (parent != null) this.parent = parent.id;
-    }
+    this.id = (Math.random() + 1).toString(36).substring(5);
+    if (parent != null) this.parent = parent.id;
+  }
 }
 
-export class App {
-    constructor() {
-        // 0=work, 1=short break, 2=long break
-        this.currentSession = -1;
-        this.breakCount = 0;
-        this.durations = [25, 5, 15];
+export const app = writable({
+  paused: true,
+  breakCount: 0,
+  isBreak: true,
+  sessionMinutes: 0,
+  sessionNotification: "",
+  sessionName: "",
+  playRingtone: true,
+  showNotification: true,
+  durations: [25, 5, 15], // work, short break, long break
+  taskTree: new Task("Tasks", true, null, false),
+});
 
-        this.playMusic = true;
-        this.playRingtone = true;
-        this.showNotification = true;
-
-        this.taskTree = new Task("Your tasks", true, null, false);
-        this.music = new Music();
-
-        this.paused = undefined;
-    }
-
-    loadFromLocalstorage(localStorage) {
-        // Copy values from the cached data into our class
-        const cachedData = localStorage.getItem("data");
-        if (cachedData === null) return;
-        const obj = JSON.parse(cachedData);
-        Object.assign(this, obj);
-
-        this.breakCount = 0;
-        this.currentSession = -1;
-
-        let temp = new Music();
-        temp.genre = this.music.genre == undefined ? musicGenres.lofi : this.music.genre;
-        this.music = temp;
-        this.paused = undefined;
-    }
-
-    gotoNextSession() {
-        // Move to the next possible state (session)
-        this.currentSession = (this.currentSession + 1) % 3;
-
-        if (this.currentSession == 0) {
-            return "Work";
-        }
-
-        if (this.currentSession == 1) {
-            this.breakCount += 1;
-            return "Short Break";
-        }
-
-        // Only enter the long break session after
-        // we've entered the short break session 4 times
-        if (breakCount < 4) {
-            this.currentSession = 0;
-            return "Work";
-        }
-
-        this.breakCount = 0;
-        return "Long Break";
-    }
-
-    getSessionMessage() {
-        if (this.currentSession == 0) return "Back to work!";
-        if (this.currentSession == 1) return "Take a short break";
-        return "Take a long break";
-    }
-
-    getSessionDuration() {
-        return this.durations[this.currentSession];
-    }
-
-    getPlaybackIcon() {
-        if (this.paused == undefined)
-            return getPath("play.svg");
-        return this.paused ? getPath("pause.svg") : getPath("play.svg");
-    }
+export function localstorageLoad() {
+  const data = JSON.parse(localStorage.getItem("data") ?? "{}");
+  app.update(state => ({ ...state, ...data }));
 }
 
-export const app = writable(new App());
+export function localstorageSave() {
+  const fields = ["durations", "playRingtone", "showNotification", "taskTree"];
+  app.update(state => {
+    const str = JSON.stringify(state, fields);
+    localStorage.setItem("data", str);
+    return state;
+  });
+}
+
+export function nextSession() {
+  app.update(state => {
+    const isBreak = !state.isBreak;
+    const breakCount = isBreak ? Math.max(1, (state.breakCount + 1) % 4) : state.breakCount;
+
+    const sessionName =
+      !isBreak ? "Work" : breakCount === 4 ? "Long break" : "Short break";
+
+    const sessionNotification =
+      !isBreak ? "Back to work" : `Take a ${breakCount === 4 ? "long" : "short"} break`;
+
+    const sessionMinutes = state.durations[!isBreak ? 0 : breakCount !== 4 ? 1 : 2];
+
+    return { ...state, isBreak, breakCount, sessionName, sessionNotification, sessionMinutes };
+  });
+}
+
+export function togglePause() { app.update(state => ({...state, paused: !state.paused})); }
