@@ -1,8 +1,4 @@
 import { writable  } from "svelte/store";
-import { dev } from "$app/environment";
-
-// The asset paths in dev are different than those in production
-export const getPath = (name) => dev ? `/${name}` : name;
 
 export class Task {
   constructor(name, isRoot, parent, newlyCreated) {
@@ -28,23 +24,49 @@ export const app = writable({
   paused: true,
   playRingtone: true,
   showNotification: true,
-  bg: "", bgShade: "", fg: "", darkMode: false,
+  bg: "", fgShade: "",
+  bgShade: "", fg: "",
+  darkMode: false,
   taskTree: new Task("Tasks", true, null, false),
 });
 
-export function localstorageLoad() {
-  const data = JSON.parse(localStorage.getItem("data") ?? "{}");
-  app.update(state => ({ ...state, ...data }));
+function serializeTask(task) {
+  return {
+    name: task.name,
+    done: task.done,
+    isRoot: task.isRoot,
+    newlyCreated: task.newlyCreated,
+    id: task.id, parent: task.parent,
+    children: task.children.map(serializeTask),
+  };
+}
+
+function deserializeTask(obj, parent = null) {
+  const task = new Task(obj.name, obj.isRoot, parent, obj.newlyCreated);
+  task.id = obj.id;
+  task.done = obj.done;
+  task.children = obj.children ? obj.children.map(child => deserializeTask(child, task)) : [];
+  return task;
 }
 
 export function localstorageSave() {
-  const fields = ["workMinutes", "shortBreakMinutes", "longBrekaMinutes",
-    "playRingtone", "showNotification", "taskTree", "darkMode"];
   app.update(state => {
-    const str = JSON.stringify(state, fields);
-    localStorage.setItem("data", str);
+    const keys = ["darkMode", "workMinutes", "shortBreakMinutes",
+      "longBreakMinutes", "playRingtone", "showNotification", "taskTree"];
+    const stateForStorage = { ...state, taskTree: serializeTask(state.taskTree) };
+    localStorage.setItem("data", JSON.stringify(stateForStorage, keys));
     return state;
   });
+}
+
+export function localstorageLoad() {
+  const raw = localStorage.getItem("data");
+  if (!raw) return;
+
+  const data = JSON.parse(raw);
+  if (data.taskTree)
+    data.taskTree = deserializeTask(data.taskTree);
+  app.update(state => ({ ...state, ...data }));
 }
 
 export function nextSession() {
@@ -66,18 +88,12 @@ export function togglePause() { app.update(state => ({...state, paused: !state.p
 
 export function setTheme(toggle) {
   app.update(state => {
-    const osDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const darkMode = toggle ? !state.darkMode : osDark;
-    let fg, bg, bgShade;
-    if (darkMode) {
-      fg = "#fff";
-      bg = "#000";
-      bgShade = "#222";
-    } else {
-      fg = "#000";
-      bg = "#fff";
-      bgShade = "#f4f4f6";
-    }
-    return { ...state, fg, bg, bgShade, darkMode };
+    const darkMode = toggle ? !state.darkMode : false;
+    let fg, fgShade, bg, bgShade;
+    if (darkMode)
+      fg = "#fff", fgShade = "#dfdfdf", bg = "#000", bgShade = "#111";
+    else
+      fg = "#000", fgShade = "#222", bg = "#fff", bgShade = "#f4f4f6";
+    return { ...state, fg, fgShade, bg, bgShade, darkMode };
   });
 }

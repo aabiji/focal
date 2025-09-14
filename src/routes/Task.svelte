@@ -1,5 +1,7 @@
 <script>
-  import { app, getPath, Task } from "./state";
+  import { Icon } from "svelte-icons-pack";
+  import { BiX, BiPlus } from "svelte-icons-pack/bi";
+  import { app, Task } from "./state";
   import Checkbox from "./Checkbox.svelte";
   import Input from "./Input.svelte";
 
@@ -8,11 +10,14 @@
   const triggerUIRefresh = () => ($app.taskTree = { ...$app.taskTree });
 
   const toggleStatus = () => {
-    task.done = !task.done;
-    let parentState = task.done;
-    for (let child of task.children) {
-      child.done = parentState;
-    }
+    const recurse = (t, done) => {
+      t.done = done;
+      for (let child of t.children) {
+        child.done = t.done;
+        recurse(child, done);
+      }
+    };
+    recurse(task, !task.done);
     triggerUIRefresh();
   };
 
@@ -46,7 +51,7 @@
   };
 </script>
 
-<div class="container" >
+<div class="container">
   <div class="task" style:background-color={$app.bg}>
     <div
     class="box"
@@ -56,35 +61,32 @@
     tabindex="0">
     <Checkbox done={task.done} />
   </div>
-
   <div class="text">
-    {#if task.isRoot}
-    <p>{task.name}</p>
+  {#if task.isRoot}
+    <p style:color={$app.fg}>{task.name}</p>
     {:else}
     <Input
-    bind:value={task.name}
-    bind:newlyCreated={task.newlyCreated}
-    />
+      bind:value={task.name}
+      bind:newlyCreated={task.newlyCreated}
+      />
     {/if}
   </div>
-
   <div class="controls">
-    <button class="add" on:click={() => addSubTask()}>
-      <img src={getPath("plus.svg")} alt="Add icon" />
-    </button>
     {#if !task.isRoot}
-    <button class="remove" on:click={() => removeTask()}>
-      <img src={getPath("trash.svg")} alt="Trash icon" />
-    </button>
+      <button class="remove" on:click={() => removeTask()}>
+        <Icon src={BiX} color="#ff0000" size="24" />
+      </button>
     {/if}
+    <button class="add" on:click={() => addSubTask()}>
+      <Icon src={BiPlus} color={`${$app.fgShade}`} size="32" />
+    </button>
   </div>
-</div>
-
-<div class="children">
-  {#each task.children as childTask}
-  <svelte:self bind:task={childTask} />
-  {/each}
-</div>
+  </div>
+  <div class="children">
+      {#each task.children as childTask}
+          <svelte:self bind:task={childTask} />
+          {/each}
+  </div>
 </div>
 
 <style>
@@ -102,7 +104,7 @@
     padding-right: 10px;
     height: fit-content;
     align-items: center;
-   }
+  }
 
   .text {
     width: 80%;
@@ -113,9 +115,7 @@
   }
 
   @media only screen and (max-width: 550px) {
-    .children {
-      margin-left: 18px;
-    }
+    .children { margin-left: 18px; }
   }
 
   @media only screen and (min-width: 550px) {
@@ -129,21 +129,13 @@
     margin-top: -8px;
   }
 
-  .add {
-    color: purple;
-    margin-left: 10px;
-    float: right;
-  }
-
-  .remove {
-    float: right;
-    width: 30px;
-    color: purple;
-  }
-
   .controls {
     margin-left: auto;
     min-width: 25%;
+    flex-direction: "row";
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
   }
 
   button {
@@ -153,10 +145,5 @@
     cursor: pointer;
     margin-right: -10px;
     background-color: rgba(0, 0, 0, 0);
-  }
-
-  img {
-    width: 22px;
-    height: 22px;
   }
 </style>

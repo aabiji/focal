@@ -1,6 +1,8 @@
 <script>
   import { app, setTheme } from "./state";
-   export let showSettingsPopup;
+  import { Icon } from "svelte-icons-pack";
+  import { FiX } from "svelte-icons-pack/fi";
+  export let showSettingsPopup;
 
   // in order to buffer changes
   let work = $app.workMinutes;
@@ -16,13 +18,15 @@
 
 {#if showSettingsPopup}
 <div class="backdrop">
-  <dialog open style:background-color={$app.bg} style:color={$app.fg}>
+  <dialog open style:color={$app.fg}
+      style:background-color={$app.darkMode ? $app.bgShade : $app.bg}>
     <button class="close" on:click={close}>
+      <Icon src={FiX} color={`${$app.fgShade}`} size="26" />
     </button>
 
     <div>
       <label>
-        <input type="checkbox" bind:checked={$app.darkMode} on:change={() => setTheme(true)} />
+        <input type="checkbox" on:change={() => setTheme(true)} />
         Dark mode
       </label>
       <label>

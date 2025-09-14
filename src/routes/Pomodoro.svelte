@@ -1,6 +1,9 @@
 <script>
   import { onMount } from "svelte";
-  import { app, getPath, nextSession, togglePause } from "./state";
+  import { dev } from "$app/environment";
+  import { app, nextSession, togglePause } from "./state";
+  import { Icon } from "svelte-icons-pack";
+  import { BiPause, BiPlay, BiSolidCog } from "svelte-icons-pack/bi";
 
   const formatTime = (totalSeconds) => {
     const h = Math.floor(totalSeconds / 3600);
@@ -29,7 +32,7 @@
       new Notification("Focal", { body: $app.sessionNotification, icon: "" });
 
     if ($app.playRingtone) {
-      const audio = new Audio(getPath("tone.mp3"));
+      const audio = new Audio(dev ? `/tone.mp3` : "tone.mp3");
       audio.play();
     }
   }
@@ -57,12 +60,12 @@
 <div class="container">
   <p>{$app.sessionName}</p>
   <h1>{formatTime(timeDifference)}</h1>
-  <div class="controls" >
+  <div class="controls">
     <button on:click={toggleTimer}>
-      <img src={$app.paused ? getPath("play.svg") : getPath("pause.svg")} alt="play icon" />
+      <Icon src={$app.paused ? BiPlay : BiPause} color={`${$app.fgShade}`} size="32" />
     </button>
     <button on:click={() => (showSettingsPopup = true)}>
-      <img src={getPath("settings.svg")} alt="settings icon" />
+        <Icon src={BiSolidCog} color={`${$app.fgShade}`} size="22" />
     </button>
   </div>
 </div>
@@ -98,9 +101,9 @@
     border: none;
   }
 
-  .controls button img {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
+  .controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 </style>

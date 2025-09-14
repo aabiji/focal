@@ -25,7 +25,7 @@
 
 <style>
   :root {
-    --color: #02f036;
+    --color: purple;
   }
 
   .checkbox-wrapper-12 {
@@ -70,7 +70,7 @@
     left: 0;
     width: 24px;
     height: 24px;
-    border: 2px solid #bfbfc0;
+    border: 2px solid #cfcfcf;
     border-radius: 50%;
   }
 
@@ -97,7 +97,7 @@
   }
 
   .checkbox-wrapper-12 .cbx svg path {
-    stroke: #fff;
+    stroke: #dfdfdf;
     stroke-width: 3;
     stroke-linecap: round;
     stroke-linejoin: round;
