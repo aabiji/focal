@@ -1,5 +1,5 @@
 <script>
-  import { app, getPath, Task } from "./app";
+  import { app, getPath, Task } from "./state";
   import Checkbox from "./Checkbox.svelte";
   import Input from "./Input.svelte";
 
@@ -46,15 +46,14 @@
   };
 </script>
 
-<div class="container">
-  <div class="task">
+<div class="container" >
+  <div class="task" style:background-color={$app.bg}>
     <div
     class="box"
     on:keydown={(event) => toggleKeyboardHandler(event)}
     on:click={() => toggleStatus()}
     role="button"
-    tabindex="0"
-    >
+    tabindex="0">
     <Checkbox done={task.done} />
   </div>
 
@@ -102,9 +101,8 @@
     padding-left: 10px;
     padding-right: 10px;
     height: fit-content;
-    background-color: #fff;
     align-items: center;
-  }
+   }
 
   .text {
     width: 80%;

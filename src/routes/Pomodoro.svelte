@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { app, getPath, nextSession, togglePause } from "./app";
+  import { app, getPath, nextSession, togglePause } from "./state";
 
   const formatTime = (totalSeconds) => {
     const h = Math.floor(totalSeconds / 3600);
@@ -9,13 +9,19 @@
     return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
+  const sessionMinutes = () => {
+    return $app.isBreak
+      ? $app.breakCount !== 4 ? $app.shortBreakMinutes : $app.longBreakMinutes
+      : $app.workMinutes;
+  }
+
   export let showSettingsPopup;
   let totalSeconds = 0, timeDifference = 0;
   let startTime, timer;
 
   onMount(() => {
     nextSession();
-    timeDifference = $app.sessionMinutes * 60;
+    timeDifference = sessionMinutes() * 60;
   });
 
   const signalSessionChange = () => {
@@ -26,7 +32,7 @@
       const audio = new Audio(getPath("tone.mp3"));
       audio.play();
     }
-  };
+  }
 
   const toggleTimer = () => {
     togglePause();
@@ -38,12 +44,11 @@
       timer = setInterval(() => {
         const elapsedSeconds = Math.floor((new Date() - startTime) / 1000);
         const totalMinutes = Math.floor((totalSeconds + elapsedSeconds) / 60);
-        if (totalMinutes >= $app.sessionMinutes) {
+        if (totalMinutes >= sessionMinutes()) {
           nextSession();
           signalSessionChange();
         }
-
-        timeDifference = ($app.sessionMinutes * 60) - (totalSeconds + elapsedSeconds);
+        timeDifference = (sessionMinutes() * 60) - (totalSeconds + elapsedSeconds);
       });
     }
   }
@@ -52,7 +57,7 @@
 <div class="container">
   <p>{$app.sessionName}</p>
   <h1>{formatTime(timeDifference)}</h1>
-  <div class="controls">
+  <div class="controls" >
     <button on:click={toggleTimer}>
       <img src={$app.paused ? getPath("play.svg") : getPath("pause.svg")} alt="play icon" />
     </button>

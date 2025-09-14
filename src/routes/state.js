@@ -1,4 +1,4 @@
-import { writable, get } from "svelte/store";
+import { writable  } from "svelte/store";
 import { dev } from "$app/environment";
 
 // The asset paths in dev are different than those in production
@@ -18,15 +18,17 @@ export class Task {
 }
 
 export const app = writable({
-  paused: true,
   breakCount: 0,
   isBreak: true,
-  sessionMinutes: 0,
   sessionNotification: "",
   sessionName: "",
+  workMinutes: 25,
+  shortBreakMinutes: 5,
+  longBreakMinutes: 15,
+  paused: true,
   playRingtone: true,
   showNotification: true,
-  durations: [25, 5, 15], // work, short break, long break
+  bg: "", bgShade: "", fg: "", darkMode: false,
   taskTree: new Task("Tasks", true, null, false),
 });
 
@@ -36,7 +38,8 @@ export function localstorageLoad() {
 }
 
 export function localstorageSave() {
-  const fields = ["durations", "playRingtone", "showNotification", "taskTree"];
+  const fields = ["workMinutes", "shortBreakMinutes", "longBrekaMinutes",
+    "playRingtone", "showNotification", "taskTree", "darkMode"];
   app.update(state => {
     const str = JSON.stringify(state, fields);
     localStorage.setItem("data", str);
@@ -55,10 +58,26 @@ export function nextSession() {
     const sessionNotification =
       !isBreak ? "Back to work" : `Take a ${breakCount === 4 ? "long" : "short"} break`;
 
-    const sessionMinutes = state.durations[!isBreak ? 0 : breakCount !== 4 ? 1 : 2];
-
-    return { ...state, isBreak, breakCount, sessionName, sessionNotification, sessionMinutes };
+    return { ...state, isBreak, breakCount, sessionName, sessionNotification };
   });
 }
 
 export function togglePause() { app.update(state => ({...state, paused: !state.paused})); }
+
+export function setTheme(toggle) {
+  app.update(state => {
+    const osDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const darkMode = toggle ? !state.darkMode : osDark;
+    let fg, bg, bgShade;
+    if (darkMode) {
+      fg = "#fff";
+      bg = "#000";
+      bgShade = "#222";
+    } else {
+      fg = "#000";
+      bg = "#fff";
+      bgShade = "#f4f4f6";
+    }
+    return { ...state, fg, bg, bgShade, darkMode };
+  });
+}

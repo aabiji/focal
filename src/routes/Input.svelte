@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { app } from "./state";
 
   export let newlyCreated;
   export let value;
@@ -22,6 +23,7 @@
 </script>
 
 <textarea
+  style:color={$app.fg}
   placeholder="Your Task"
   spellcheck="false"
   autocorrect

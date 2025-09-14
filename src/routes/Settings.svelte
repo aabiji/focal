@@ -1,16 +1,30 @@
 <script>
-  import { app, getPath } from "./app";
-  export let showSettingsPopup;
+  import { app, setTheme } from "./state";
+   export let showSettingsPopup;
+
+  // in order to buffer changes
+  let work = $app.workMinutes;
+  let short = $app.shortBreakMinutes;
+  let long = $app.longBreakMinutes;
+  const close = () => {
+    showSettingsPopup = false;
+    $app.workMinutes = work;
+    $app.shortBreakMinutes = short;
+    $app.longBreakMinutes = long;
+  }
 </script>
 
 {#if showSettingsPopup}
 <div class="backdrop">
-  <dialog open>
-    <button class="close" on:click={() => { showSettingsPopup = false; }}>
-      <img src={getPath("close.svg")} alt="Close icon" />
+  <dialog open style:background-color={$app.bg} style:color={$app.fg}>
+    <button class="close" on:click={close}>
     </button>
 
     <div>
+      <label>
+        <input type="checkbox" bind:checked={$app.darkMode} on:change={() => setTheme(true)} />
+        Dark mode
+      </label>
       <label>
         <input type="checkbox" bind:checked={$app.playRingtone} />
         Ring on session switch
@@ -25,15 +39,18 @@
     <div class="durations">
       <div class="duration">
         <p>Work session</p>
-        <input type="number" bind:value={$app.durations[0]} />
+        <input type="number" bind:value={work}
+          style:background-color={$app.bg} style:color={$app.fg} />
       </div>
       <div class="duration">
         <p>Short break</p>
-        <input type="number" bind:value={$app.durations[1]} />
+        <input type="number" bind:value={short}
+          style:background-color={$app.bg} style:color={$app.fg} />
       </div>
       <div class="duration">
         <p>Long break</p>
-        <input type="number" bind:value={$app.durations[2]} />
+        <input type="number" bind:value={long}
+          style:background-color={$app.bg} style:color={$app.fg} />
       </div>
     </div>
   </dialog>
@@ -51,11 +68,6 @@
       border-radius: 10px;
       transform: translateY(-80%);
     }
-
-    .close img {
-      width: 15px;
-      height: 15px;
-    }
   }
 
   @media only screen and (min-width: 550px) {
@@ -67,11 +79,6 @@
       margin: 0 auto;
       border-radius: 10px;
       transform: translateY(-80%);
-    }
-
-    .close img {
-      width: 25px;
-      height: 25px;
     }
   }
 

@@ -1,5 +1,5 @@
 <script>
-  import { app } from "./app";
+  import { app } from "./state";
   import Task from "./Task.svelte";
 </script>
 

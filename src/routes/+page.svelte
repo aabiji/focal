@@ -3,24 +3,27 @@
   import TaskTree from "./TaskTree.svelte";
   import Settings from "./Settings.svelte";
 
-  import { app, localstorageLoad, localstorageSave } from "./app";
+  import { app, localstorageLoad, localstorageSave, setTheme } from "./state";
   import { onMount } from "svelte";
 
   let showSettingsPopup = false;
 
   onMount(() => {
     localstorageLoad();
-    //window.addEventListener("beforeunload", () => localstorageSave());
+    window.addEventListener("beforeunload", () => localstorageSave());
     if ($app.showNotification)
       Notification.requestPermission();
-  });
+    setTheme(false);
+   });
 </script>
 
 <Settings bind:showSettingsPopup />
-<div class="left-side">
+<div class="left-side" style:background-color={$app.bg}>
   <Pomodoro bind:showSettingsPopup />
 </div>
-<div class="right-side"><TaskTree /></div>
+<div class="right-side" style:background-color={$app.bgShade}>
+  <TaskTree />
+</div>
 
 <style>
   @font-face {
@@ -47,7 +50,6 @@
   .right-side {
     height: 100%;
     overflow-y: auto;
-    background-color: #f4f4f6;
   }
 
   .right-side::-webkit-scrollbar-track { background: #81819c; }
@@ -68,11 +70,7 @@
       overflow: hidden;
     }
 
-    .right-side {
-      width: 100%;
-      margin-top: 25px;
-    }
-
+    .right-side { width: 100%; }
     .right-side::-webkit-scrollbar { width: 5px; }
   }
 
