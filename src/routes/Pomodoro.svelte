@@ -50,6 +50,7 @@
         if (totalMinutes >= sessionMinutes()) {
           nextSession();
           signalSessionChange();
+          startTime = new Date();
         }
         timeDifference = (sessionMinutes() * 60) - (totalSeconds + elapsedSeconds);
       });
